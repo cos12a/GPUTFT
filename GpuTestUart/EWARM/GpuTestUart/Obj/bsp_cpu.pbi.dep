@@ -1,0 +1,6 @@
+bsp_cpu.pbi: E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\CPU\bsp_cpu.c \
+  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\CPU\cpu_core.h \
+  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\CPU\IAR\cpu.h \
+  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\CPU\cpu_def.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/include\FreeRTOS.h \
+  E:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stddef.h
