@@ -126,7 +126,7 @@ void  TerminalSerial_Exit (void)
 * Note(s)     : none.
 *********************************************************************************************************
 */
-
+__weak
 CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
                                CPU_SIZE_T   buf_len)
 {
