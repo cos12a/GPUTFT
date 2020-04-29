@@ -35,6 +35,7 @@
 
 #include  <terminal.h>
 #include  <FreeRTOS.h>
+#include  <sh_shell.h>  
 
 
 /*

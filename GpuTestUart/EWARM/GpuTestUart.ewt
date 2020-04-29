@@ -1417,4 +1417,16 @@
             </file>
         </group>
     </group>
+    <group>
+        <name>UserCode</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\userCode\app_cfg.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\userCode\send_test.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\userCode\shell_app.c</name>
+        </file>
+    </group>
 </project>

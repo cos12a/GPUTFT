@@ -28,8 +28,8 @@
 #ifndef STREAM_BUFFER_INTERRUPT_H
 #define STREAM_BUFFER_INTERRUPT_H
 
-void vStartStreamBufferInterruptDemo( void );
-void vBasicStreamBufferSendFromISR( void );
-BaseType_t xIsInterruptStreamBufferDemoStillRunning( void );
+//void vStartStreamBufferInterruptDemo( void );
+//void vBasicStreamBufferSendFromISR( void );
+//BaseType_t xIsInterruptStreamBufferDemoStillRunning( void );
 
 #endif /* STREAM_BUFFER_INTERRUPT_H */

@@ -1,0 +1,211 @@
+[Global]
+CurrentProject=GPU_FT.vpj
+[ProjectDates]
+GPU_FT.vpj=20200427011835814
+[ActiveConfig]
+GPU_FT.vpj=Debug
+[TreeExpansion2]
+-@ GPU_FT.vpj
+  - Source Files
+  - Header Files
+  + Resource Files
+  + Bitmaps
+  + Other Files
+scroll:0
+[State]
+MONITOR_CONFIGS: 121
+MONITOR_CONFIG: 119 0 0 1920 1080
+SCREEN: 1920 1080 576 257 1211 744 0 0 N 0 0 0 0 810 287 0
+MDISTATE: 1
+AAAAAwAAAAIAAAAC2gAAAAIAMAAAAAAAAAA+AAAEugAAAs0AAAAAAAAAAAAAB38AAAQ3AAAAAuoAAACeAAAAAvsAAAABAAAAAQAAAAD7AAAAAQAAAAEAAAAA/AAAAHsAAAAAbgAyADoAOgA6AEUAOgBcAEQAaQBzAGsARQBcAFAAcgBvAGcAcgBhAG0AUAByAG8AagBlAGMAdABcAEcAUABVAFQARgBUAFwAdQBzAGUAcgBDAG8AZABlAFwAcwBoAGUAbABsAF8AYQBwAHAALgBjAQD/////AAEAAAAA2gAAAB4AMAAtADEANQA2ADAAOQA5ADYANAA4ADUAOAA0ADkATgAAAeAAAAFEAAAFSQAAAq4AAAAAAAAAAAAAB38AAAQ3AAAAAuoAAAAWAAAAAvsAAAAAAAAAAPsAAAAAAAAAAAAAAAA=
+STANDARD_LAYOUT: 57 1 42 10 4 N 0
+_tbdebug_exceptions_form F=384
+_tbprojects_form F=8
+_tbsymbolcalls_form F=40
+_tbfind_symbol_form F=32
+_tbclass_form F=8
+_tbdebug_breakpoints_form F=384
+_tbFTPOpen_form F=0
+_tbdebug_stack_form F=64
+_tbdeltasave_form F=0
+_tbslickc_stack_form F=8
+_tbproctree_form F=8
+_tbbaseclasses_form F=40
+_tbsymbol_props_form F=8
+_tbshell_form F=8
+_tbdebug_watches_form F=64
+_tbsearch_form F=8
+_tbcbrowser_form F=8
+_tbsymbolcallers_form F=40
+_tbregex_form F=40
+_tbunittest_form F=0
+_tbFTPClient_form F=0
+_tbbufftabs_form F=11
+_tbdebug_regs_form F=64
+_tbfind_form F=36
+_tbmessages_browser_form F=8
+_tbnotification_form F=36
+_tbsymbol_args_form F=8
+_tbfilelist_form F=44
+_tbbookmarks_form F=8
+_tbtagwin_form F=8
+_tbdebug_members_form F=64
+_tbderivedclasses_form F=40
+_tboutputwin_form F=8
+_tbannotations_browser_form F=0
+_tbopen_form F=40
+_tbtagrefs_form F=8
+_tbdebug_classes_form F=64
+_tbdebug_autovars_form F=64
+_tbdebug_locals_form F=64
+_tbdebug_threads_form F=64
+_tbdebug_memory_form F=64
+_tbclipboard_form F=44
+_tbtagwin_form T=0
+_tbsearch_form T=0
+_tbshell_form T=0
+_tbtagrefs_form T=0
+_tbproctree_form T=0
+_tboutputwin_form T=0
+_tbopen_form T=0
+_tbclass_form T=0
+_tbprojects_form T=0
+_tbmessages_browser_form T=0
+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
+QTOOLBAR 2 0
+AAAA/wAAAAD9AAAAAAAABLsAAAKQAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAIAAAAQAFMAdABhAG4AZABhAHIAZAEAAAAA/////wAAAAAAAAAAAAAAHgBDAHUAcgByAGUAbgB0ACAAQwBvAG4AdABlAHgAdAEAAAL+/////wAAAAAAAAAA
+_tbstandard_form 1
+_tbcontext_form 1
+APP_LAYOUT: 57 1 42 10 4 N 0
+_tbdebug_exceptions_form F=384
+_tbprojects_form F=8
+_tbsymbolcalls_form F=40
+_tbfind_symbol_form F=32
+_tbclass_form F=8
+_tbdebug_breakpoints_form F=384
+_tbFTPOpen_form F=0
+_tbdebug_stack_form F=64
+_tbdeltasave_form F=0
+_tbslickc_stack_form F=8
+_tbproctree_form F=8
+_tbbaseclasses_form F=40
+_tbsymbol_props_form F=8
+_tbshell_form F=8
+_tbdebug_watches_form F=64
+_tbsearch_form F=8
+_tbcbrowser_form F=8
+_tbsymbolcallers_form F=40
+_tbregex_form F=40
+_tbunittest_form F=0
+_tbFTPClient_form F=0
+_tbbufftabs_form F=11
+_tbdebug_regs_form F=64
+_tbfind_form F=36
+_tbmessages_browser_form F=8
+_tbnotification_form F=36
+_tbsymbol_args_form F=8
+_tbfilelist_form F=44
+_tbbookmarks_form F=8
+_tbtagwin_form F=8
+_tbdebug_members_form F=64
+_tbderivedclasses_form F=40
+_tboutputwin_form F=8
+_tbannotations_browser_form F=0
+_tbopen_form F=40
+_tbtagrefs_form F=8
+_tbdebug_classes_form F=64
+_tbdebug_autovars_form F=64
+_tbdebug_locals_form F=64
+_tbdebug_threads_form F=64
+_tbdebug_memory_form F=64
+_tbclipboard_form F=44
+_tbtagwin_form T=0
+_tbsearch_form T=0
+_tbshell_form T=0
+_tbtagrefs_form T=0
+_tbproctree_form T=0
+_tboutputwin_form T=0
+_tbopen_form T=0
+_tbclass_form T=0
+_tbprojects_form T=0
+_tbmessages_browser_form T=0
+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
+QTOOLBAR 2 0
+AAAA/wAAAAD9AAAAAAAABLsAAAKQAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAIAAAAQAFMAdABhAG4AZABhAHIAZAEAAAAA/////wAAAAAAAAAAAAAAHgBDAHUAcgByAGUAbgB0ACAAQwBvAG4AdABlAHgAdAEAAAL+/////wAAAAAAAAAA
+_tbstandard_form 1
+_tbcontext_form 1
+END_MONITOR_CONFIGS:
+CWD: ..\SE
+BUFFER: BN="..\..\userCode\shell_app.c"""""
+BI: MA=1 74 1  TABS= WWS=9 IWT= ST=8 IN=2 BW=0 US=32000 RO=0 SE=1 SN=0 BIN=0 MN=	HM=0 MF=52428800 TL=0 MLL=0 ASE=0 LNL=1 LCF=0 CAPS=0 E=70 ESBU2=-1 CL="" SC="" SCE= SCU= ALM=0 FWRM=0 HMRE=0 HMRBW=0 SPCWT= SWF=2 SM= STAT=
+VIEW: LN=.0 CL=1 LE=0 CX=0 CY=0 WI=5 BI=1 HT=0 HN=0 HF=0 HC=4 HB=4
+WINDOW: 1 26 808 260 0 0 N  WF=0 WT=2 "Default Unicode Font,10,0,1" DID=0 MI="*,,,"
+BUFFER: BN="..\..\userCode\shell_app.c"""""
+VIEW: LN=.881 CL=82 LE=305 CX=49 CY=6 WI=16 BI=1 HT=0 HN=0 HF=0 HC=4 HB=4
+MDISTATE: 1
+AAAAAwAAAAIAAAAC2gAAAAIAMAAAAAAAAAA+AAAEugAAAs0AAAAAAAAAAAAAB38AAAQ3AAAAAuoAAACeAAAAAvsAAAABAAAAAQAAAAD7AAAAAQAAAAEAAAAA/AAAAHsAAAAAbgAyADoAOgA6AEUAOgBcAEQAaQBzAGsARQBcAFAAcgBvAGcAcgBhAG0AUAByAG8AagBlAGMAdABcAEcAUABVAFQARgBUAFwAdQBzAGUAcgBDAG8AZABlAFwAcwBoAGUAbABsAF8AYQBwAHAALgBjAQD/////AAEAAAAA2gAAAB4AMAAtADEANQA2ADAAOQA5ADYANAA4ADUAOAA0ADkATgAAAeAAAAFEAAAFSQAAAq4AAAAAAAAAAAAAB38AAAQ3AAAAAuoAAAAWAAAAAvsAAAAAAAAAAPsAAAAAAAAAAAAAAAA=
+FILEHIST: 9
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Inc\main.h
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\UserCode\shell_cmd\shell_cmd.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Middlewares\Third_Party\FreeRTOS\Source\tasks.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Middlewares\Third_Party\FreeRTOS\Source\stream_buffer.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\UserCode\StreamBuffer\serial_transmit.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\app_freertos.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\usart.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_uart.c
+..\..\userCode\shell_app.c
+ALLFILEHIST: 46
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\WS2812B_LED\WS2812B_Test\UserCode\WS2812B\src\ws2812b.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\WS2812B_LED\WS2812B_Test\UserCode\WS2812B\src\visEffect.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Core\Src\usart.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\usart.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\EWARM\uCShellDemo.ewp
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\ThreadFile\ThreadWorld.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\testCode\testTask.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Middlewares\Third_Party\FreeRTOS\Source\tasks.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Middlewares\Third_Party\FreeRTOS\Source\include\task.h
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\UserCode\StreamBuffer\StreamBufferInterrupt.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Middlewares\Third_Party\FreeRTOS\Source\stream_buffer.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_uart.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\TestTask\shipping_processing.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\UserCode\shell_cmd\shell_cmd.c
+..\..\userCode\shell_app.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\UserCode\StreamBuffer\serial_transmit.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\TestTask\rx_processing.h
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Inc\main.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggMachineV03\Core\Src\main.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Core\Src\main.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\main.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uC-Lib\lib_str.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uC-Lib\Ports\ARM\GNU\lib_mem_a.s
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\testCode\HostTestSof.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang\heap_4.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\hardwareControl\hardwareControl.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\hardwareControl\hardwareControl.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\hardwareControl\hardwareControl.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\hardwareControl\hardwareControl.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\config\hardwareCfg.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\config\hardwareCfg.h
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\gpio.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggMachineV03\userFile\config\egg_config.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserFile\config\egg_config.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\EWARM\CANTest\Obj\displayFancy.pbi.xcl
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\Dispaly\DisplayDrive.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\userCodeM4MCU\testCode\DebugThread\debugThreadWorld.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Drivers\CMSIS\Include\core_cm4.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Copy of rx_processing20190511.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\EWARM\EggMachineDebug\Obj\can.o
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\EWARM\CANTest\Obj\can.o
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\Core\Src\can.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\WS2812B_LED\WS2812B_Test\Drivers\CMSIS\DSP_Lib\Source\StatisticsFunctions\arm_var_q31.c
+..\..\..\FreeRTOS\uCShell_Demo\uCShellDemo\uCShellDemo\Core\Src\app_freertos.c
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\TestTask\agreement.h
+..\..\..\..\ShanHaiItem\Toy Egg Machine\Program\EggM0toM4MCU\UserCodeM0MCU\TestTask\agreement.c
+DEBUG: 0 0 0 0 5 0 gdb
+printf
+strcpy
+strcmp
+std::*
+boost::*
+DEBUG2: 0
+TBCLASS: 0 0

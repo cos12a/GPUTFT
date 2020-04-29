@@ -172,6 +172,7 @@ CPU_INT08U  TerminalSerial_RdByte (void)
 *********************************************************************************************************
 */
 
+__weak
 void  TerminalSerial_WrByte (CPU_INT08U  c)
 {
 

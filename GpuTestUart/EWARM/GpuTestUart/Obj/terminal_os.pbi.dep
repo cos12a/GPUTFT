@@ -30,4 +30,34 @@ terminal_os.pbi: \
   E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Lib\lib_str.h \
   E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Shell\Terminal\Cfg\terminal_cfg.h \
   E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Shell\Source\shell.h \
-  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Shell\Cfg\shell_cfg.h
+  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Shell\Cfg\shell_cfg.h \
+  E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Shell\Cmd\General\sh_shell.h \
+  E:\DiskE\ProgramProject\GPUTFT\userCode\app_cfg.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc\usart.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc/main.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc\stm32f1xx_hal_conf.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_rcc.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Device/ST/STM32F1xx/Include\stm32f1xx.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Include\core_cm3.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Include/cmsis_version.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Include/cmsis_compiler.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Include\cmsis_iccarm.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_gpio.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_exti.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_dma.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_cortex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_flash.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_pwr.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_rtc.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rtc_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_tim.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_uart.h

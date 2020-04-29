@@ -48,4 +48,7 @@ freertos.pbi: \
   E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
   E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Drivers/STM32F1xx_HAL_Driver/Inc\stm32f1xx_hal_uart.h \
   E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2\cmsis_os.h \
-  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
+  E:\DiskE\ProgramProject\GPUTFT\userCode\app_cfg.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc\usart.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc/main.h

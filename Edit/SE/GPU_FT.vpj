@@ -1,0 +1,149 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    WorkingDir="../%rw"
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="IAR_ARM"
+    Customized="1">
+    <Config
+        Name="Debug"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdGPU_FT"
+        RefFile="%rw"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="EWRAM\%rw">
+                <Exec CmdLine="%(IAR_Build)IarBuild %rn  -make %rn -log all"/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="EWRAM\%rw">
+                <Exec CmdLine="%(IAR_ARM)IarBuild %rn  -build %rn -log all"/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%op">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+            <Target
+                Name="Clean"
+                MenuCaption="Clean"
+                RunFromDir="EWARM\%rw"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles">
+                <Exec CmdLine="%(IAR_Build)IarBuild %rn  -clean %rn -log all"/>
+            </Target>
+        </Menu>
+    </Config>
+    <Config
+        Name="Release"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdGPU_FT"
+        RefFile="%rw"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="EWRAM\%rw">
+                <Exec CmdLine="%(IAR_Build)IarBuild %rn  -make %rn -log all"/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="EWRAM\%rw">
+                <Exec CmdLine="%(IAR_ARM)IarBuild %rn  -build %rn -log all"/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%op">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+            <Target
+                Name="Clean"
+                MenuCaption="Clean"
+                RunFromDir="EWARM\%rw"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles">
+                <Exec CmdLine="%(IAR_Build)IarBuild %rn  -clean %rn -log all"/>
+            </Target>
+        </Menu>
+    </Config>
+    <Rules Name="Compile">
+        <Rule
+            InputExts="*.s"
+            OutputExts="*.o"
+            LinkObject="1">
+            <Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+        </Rule>
+    </Rules>
+    <Files>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.scala;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
+            GUID="{FD2C08F5-91CF-4F31-B65C-7152348E1375}">
+            <F N="../../userCode/shell_app.c"/>
+            <F N="../../userCode/StreamBufferDemo.c"/>
+        </Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
+            GUID="{C6C58973-B924-414C-BDFE-AE922E5FC7D1}">
+            <F N="../../userCode/app_cfg.h"/>
+            <F N="../../userCode/StreamBufferDemo.h"/>
+            <F N="../../userCode/StreamBufferInterrupt.h"/>
+        </Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"
+            GUID="{33815E5D-DF8C-4D6D-859F-0A66F6B677AE}"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"
+            GUID="{9586A7A2-575B-4C86-B1F7-98DEF94D6786}"/>
+        <Folder
+            Name="Other Files"
+            Filters=""
+            GUID="{01A335F0-DE40-4D56-838C-4D69CE1777CE}"/>
+    </Files>
+</Project>

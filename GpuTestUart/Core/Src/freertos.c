@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */     
-
+#include "app_cfg.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -146,6 +146,9 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+
+
+  vStartStreamBufferInterruptInit();
   /* USER CODE END RTOS_THREADS */
 
 }
@@ -163,7 +166,10 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+//    osMutexWait(USART1_TX_MutexHandle, portMAX_DELAY);
+    osDelay(10);
+extern void RxReceive(void *argument);
+    RxReceive(NULL);
   }
   /* USER CODE END StartDefaultTask */
 }

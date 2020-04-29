@@ -47,4 +47,7 @@ stm32f1xx_it.pbi: \
   E:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\iar_intrinsics_common.h \
   E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
   E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/include\task.h \
-  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+  E:\DiskE\ProgramProject\GPUTFT\userCode\app_cfg.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc\usart.h \
+  E:\DiskE\ProgramProject\GPUTFT\GpuTestUart\EWARM/../Core/Inc/main.h
