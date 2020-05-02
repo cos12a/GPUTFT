@@ -60,6 +60,7 @@
 #include "app_cfg.h"
 
 #include "usart.h"
+#include "lib_def.h"
 
 
 #define sbiSTREAM_BUFFER_LENGTH_BYTES		    ( ( size_t ) 64 )
@@ -85,6 +86,12 @@ StreamBufferHandle_t Rx2StreamBuffer = NULL;
 
 extern osMutexId_t USART1_TX_MutexHandle;
 extern osMutexId_t USART2_TX_MutexHandle;
+/* Definitions for USART1_Send */
+extern osSemaphoreId_t USART1_SendHandle;
+/* Definitions for USART2_Send */
+extern osSemaphoreId_t USART2_SendHandle;
+extern osSemaphoreId_t USART1_RxHandle;     // USART1_RxHandle Semaphore
+
 
 #define GPU_TFT_USART_PORT                      huart1
 #define GPU_TFT_USART_MUTEXID                   USART1_TX_MutexHandle
@@ -100,6 +107,15 @@ extern osMutexId_t USART2_TX_MutexHandle;
 time.  Must be multiple of 4 bytes long as the ISR sends 4 bytes at a time*/
 static const char *pcStringToSend = "\r\n_____Hello FreeRTOS_____This is uc shell port.\r\n";
 static const char pcString2ToSend[] = "\r\nThis is GPU_TFT Lcd port.\r\n";
+
+
+static const char UC_SHELL_INIT_DONE[] = "\r\nuC-Shell init is done.\r\n";
+static const char UC_SHELL_INIT_ERR[] = "\r\nuC-Shell init is Error.\r\n";    
+static const char ShShell_Init_err[] = "ShShell_Init is Err.\r\n";
+static const char ShShell_Init_done[] =  "ShShell_Init is Done.\r\n";
+static const char userShell_Init_Done[] = "User shell init is done.\r\n";
+static const char userShell_Init_Err[] = "User shell init is error:\r\n";
+
 
 /* The string to task is looking for, which must be a substring of
 pcStringToSend. */
@@ -118,6 +134,9 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart);
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
 
+CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
+                               CPU_SIZE_T   buf_len);
+
 
 /* Incremented each time pcStringToReceive is correctly received, provided no
 errors have occurred.  Used so the check task can check this task is still
@@ -128,6 +147,9 @@ static uint32_t ulCycleCount = 0;
 
 void vStartStreamBufferInterruptInit( void )
 {
+
+    
+
 	/* Create the stream buffer that sends data from the interrupt to the
 	task, and create the task. */
 	Rx1StreamBuffer = xStreamBufferCreate( /* The buffer length in bytes. */
@@ -140,9 +162,23 @@ void vStartStreamBufferInterruptInit( void )
 										 sbiSTREAM_BUFFER_LENGTH_BYTES,
 										 /* The stream buffer's trigger level. */
 										 sbiSTREAM_BUFFER_TRIGGER_LEVEL_2 );
-	HAL_UART_Receive_IT(&huart1, Rx1_Buffer, 1u);
-	HAL_UART_Receive_IT(&huart2, Rx2_Buffer, 1u);       
 
+    Mem_Init();
+//	HAL_UART_Receive_IT(&huart1, Rx1_Buffer, 1u);
+	HAL_UART_Receive_IT(&huart2, Rx2_Buffer, 1u);    
+    if (Shell_Init()!= DEF_OK)
+    {
+        TerminalSerial_Wr((void *)UC_SHELL_INIT_ERR, sizeof( UC_SHELL_INIT_ERR ));
+
+    }
+    TerminalSerial_Wr((void *)UC_SHELL_INIT_DONE, sizeof( UC_SHELL_INIT_DONE ));
+
+    if ( ShShell_Init() != DEF_OK)
+    {
+        TerminalSerial_Wr((void *)ShShell_Init_err, sizeof( ShShell_Init_err ));
+    }
+    TerminalSerial_Wr((void *)ShShell_Init_done, sizeof( ShShell_Init_done ));
+    
 
 //    TerminalSerial_Wr( (void *)pcStringToSend, stlen(pcStringToSend));
 //    USAR2_send_byte((void *)pcString2ToSend, sizeof(pcString2ToSend));
@@ -254,7 +290,7 @@ static HAL_StatusTypeDef UART_EndTransmit_IT(UART_HandleTypeDef *huart)
   huart->TxCpltCallback(huart);
 #else
   /*Call legacy weak Tx complete callback*/
-  HAL_UART_TxCpltCallback(huart);
+  HAL_UART_Tx2CpltCallback(huart);
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
 
   return HAL_OK;
@@ -492,8 +528,8 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
       }
     }
 
-    if (--huart->RxXferCount == 0U)
-    {
+//    if (--huart->RxXferCount == 0U)
+//    {
 //      /* Disable the UART Data Register not empty Interrupt */
 //      __HAL_UART_DISABLE_IT(huart, UART_IT_RXNE);
 //
@@ -511,22 +547,22 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
       huart->RxCpltCallback(huart);
 #else
       /*Call legacy weak Rx complete callback*/
-      if ( huart->Instance == USART1 )
-      {      
-      	HAL_UART_Rx1CpltCallback(huart);
-      }
-      else if ( huart->Instance == USART2 )
-      {
+//      if ( huart->Instance == USART1 )
+//      {      
+//      	HAL_UART_Rx1CpltCallback(huart);
+//      }
+//      else if ( huart->Instance == USART2 )
+//      {
       	HAL_UART_Rx2CpltCallback(huart);
-
-      }
-      else
-      	HAL_UART_RxCpltCallback(huart);
+//
+//      }
+//      else
+//      	HAL_UART_RxCpltCallback(huart);
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
 
       return HAL_OK;
-    }
-    return HAL_OK;
+//    }
+//    return HAL_OK;
   }
   else
   {
@@ -535,43 +571,27 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
 }
 
 
-static void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//static void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//{
+//	UNUSED(huart);
+//}
+
+
+// USART1 Rx完成中断(GPU串口)
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	UNUSED(huart);
+    osSemaphoreRelease(USART1_RxHandle);        // 释放接收完成信号量
 }
 
 
-
-static void HAL_UART_Rx1CpltCallback(UART_HandleTypeDef *huart)
-{
-  /* Prevent unused argument(s) compilation warning */
-//    uint8_t sendLen;
-//  const BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-  const BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-  size_t sendCnt = xStreamBufferSendFromISR( GPU_TFT_USART_BUFFER,
-                                   ( const void * ) huart->pRxBuffPtr,
-                                   huart->RxXferSize,
-                                   (BaseType_t *) &xHigherPriorityTaskWoken );
-    if ( sendCnt == 0)
-    {
-
-    // 错误处理.
-
-    }
-
-  /* NOTE: This function should not be modified, when the callback is needed,
-           the HAL_UART_RxCpltCallback could be implemented in the user file
-   */
-}
-
-
-
+// USART2 Rx完成时中断(uC-Shell使用串口)
+// 释放接收完成信号量
 static void HAL_UART_Rx2CpltCallback(UART_HandleTypeDef *huart)
 {
+    
   /* Prevent unused argument(s) compilation warning */
-//    uint8_t sendLen;
-//  const BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
+
   const BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
   size_t sendCnt = xStreamBufferSendFromISR( UC_SHELL_USART_BUFFER,
@@ -657,26 +677,29 @@ CPU_INT08U  GPU_Serial_RdByte (void)
   *                the configuration information for the specified UART module.
   * @retval None
   */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+
+static void HAL_UART_Tx2CpltCallback(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE; //中断退出后是否切换任务
-
-	if (huart->Instance == USART1)
+    if ( huart->Instance == USART2 )
 	{
-		xSemaphoreGiveFromISR(USART1_TX_MutexHandle, pdFALSE);
-//        osMutexRelease(USART1_TX_MutexHandle);
-	}
-	else if ( huart->Instance == USART2 )
-	{
-		xSemaphoreGiveFromISR(USART2_TX_MutexHandle, pdFALSE);
-//        osMutexRelease(USART2_TX_MutexHandle);
+        osSemaphoreRelease(USART2_SendHandle);
 	}
   /* NOTE: This function should not be modified, when the callback is needed,
            the HAL_UART_TxCpltCallback could be implemented in the user file
    */
 }
 
+// 发送完成中断
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART1)
+    {
+        osSemaphoreRelease(USART1_SendHandle);
+    }
+
+}
 
 
 /*
@@ -704,7 +727,7 @@ CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
 	 
 //	xSemaphoreTake(USART1_TX_MutexHandle, portMAX_DELAY);
 //    osMutexWait(USART1_TX_MutexHandle, portMAX_DELAY);
-    osMutexAcquire(UC_SHELL_USART_MUTEXID, osWaitForever );
+    osSemaphoreAcquire(USART2_SendHandle, osWaitForever );
 	sendStatus =  HAL_UART_Transmit_DMA(&UC_SHELL_USART_PORT, (uint8_t *)pbuf, buf_len);
 //	xSemaphoreGive(USART1_TX_MutexHandle);
 //    osMutexRelease(UC_SHELL_USART_MUTEXID);
@@ -719,7 +742,8 @@ void  TerminalSerial_WrByte (CPU_INT08U c)
     HAL_StatusTypeDef sendStatus;
 	 
 //	xSemaphoreTake(USART1_TX_MutexHandle, portMAX_DELAY);
-    osMutexAcquire(UC_SHELL_USART_MUTEXID, osWaitForever );
+//#if UC_SHELL_USART_PORT == huart2
+    osSemaphoreAcquire(USART2_SendHandle, osWaitForever );
 
 	sendStatus =  HAL_UART_Transmit_DMA(&UC_SHELL_USART_PORT, (uint8_t *)&c, sizeof(char));
     
@@ -738,11 +762,11 @@ HAL_StatusTypeDef GPU_TFT_send_byte( void *pbuf,	uint16_t buf_len)
 
 	HAL_StatusTypeDef sendStatus;
 
-	osMutexAcquire(GPU_TFT_USART_MUTEXID, osWaitForever);
-    
+//	osqMutexAcquire(GPU_TFT_USART_MUTEXID, osWaitForever);
+    osSemaphoreAcquire(USART1_SendHandle, osWaitForever );
 	sendStatus =  HAL_UART_Transmit_DMA(&GPU_TFT_USART_PORT, (uint8_t *)pbuf, buf_len);
 	//	xSemaphoreGive(USART1_TX_MutexHandle);
-	osMutexRelease(GPU_TFT_USART_MUTEXID);
+//	osMutexRelease(GPU_TFT_USART_MUTEXID);
 	return( (HAL_StatusTypeDef) sendStatus );
 
 }
@@ -798,8 +822,44 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart)
   /* Disable RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
 //  CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
 //  CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
-
+    UNUSED(huart);
   /* At end of Rx process, restore huart->RxState to Ready */
 //  huart->RxState = HAL_UART_STATE_READY;
 }
+
+
+
+// 将GPU数据发送出去,并接收回来判断是否OK.如果超时则再发送一次,
+// 如果同一数据三次发送失败则返回发送Error
+
+#define GPU_RETURN_OK   "OK"
+
+HAL_StatusTypeDef GPU_tx_and_rx_hand(void         *pbuf,
+                                   CPU_SIZE_T    buf_len)
+{
+
+    osStatus_t stat;
+    uint8_t sendCnt = 0u;
+    HAL_StatusTypeDef reStat = HAL_OK;
+    const TickType_t xBlockTime = pdMS_TO_TICKS( 400ul );       //等待500ms
+
+    for (sendCnt =0; sendCnt <= 3u; sendCnt ++) {
+        
+        GPU_TFT_send_byte(pbuf, buf_len);
+        Mem_Set((void     *)&Rx1_Buffer[0],                           /* Clr cur working dir path.                            */
+            (CPU_INT08U) 0x00u,
+            (sizeof) Rx1_Buffer);
+        reStat = HAL_UART_Receive_IT (&huart1, Rx1_Buffer, 2u);
+        stat = osSemaphoreAcquire(USART1_SendHandle, xBlockTime );
+        if ( osOK == stat) {
+            if (( Mem_Cmp(GPU_RETURN_OK, Rx1_Buffer, 2) == DEF_YES) {
+                return ( HAL_OK );          // 正常退出.
+             }
+        }
+    }
+    return( reStat );               // 错误 退出.
+}
+
+
+
 

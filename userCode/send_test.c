@@ -15,6 +15,9 @@ const int8_t tab1[] = "2Test\r";
 const int8_t tab2[] = "3last\r";
 const int8_t tab3[] = "?\r";
 
+const int8_t GPU_Test[] = "DR2;CLS(0);DS24(4,0,'错误 ',1);BOS(0,30,319,130,11);\r\n";
+
+
 #define CMD_COUNT      (sizeof(sendCMD)/sizeof(sendCMD[0]))
 #define ADD_CMD_QUANTITY                4
 
@@ -49,6 +52,7 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
      {
         cmdCnt = 0u;
      }
+      GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
     }
 
 

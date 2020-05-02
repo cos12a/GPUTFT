@@ -86,10 +86,26 @@ osMutexId_t USART2_TX_MutexHandle;
 const osMutexAttr_t USART2_TX_Mutex_attributes = {
   .name = "USART2_TX_Mutex"
 };
+/* Definitions for USART1_Send */
+osSemaphoreId_t USART1_SendHandle;
+const osSemaphoreAttr_t USART1_Send_attributes = {
+  .name = "USART1_Send"
+};
+/* Definitions for USART2_Send */
+osSemaphoreId_t USART2_SendHandle;
+const osSemaphoreAttr_t USART2_Send_attributes = {
+  .name = "USART2_Send"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-   
+
+  /* Definitions for USART1_Rx */
+osSemaphoreId_t USART1_RxHandle;
+const osSemaphoreAttr_t USART1_Rx_attributes = {
+  .name = "USART1_Rx"
+}; 
+  
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -119,8 +135,18 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
+  /* Create the semaphores(s) */
+  /* creation of USART1_Send */
+  USART1_SendHandle = osSemaphoreNew(1, 1, &USART1_Send_attributes);
+
+  /* creation of USART2_Send */
+  USART2_SendHandle = osSemaphoreNew(1, 1, &USART2_Send_attributes);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
+
+  USART1_RxHandle osSemaphoreNew(1, 1, &USART1_Rx_attributes);
+  
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -148,7 +174,7 @@ void MX_FREERTOS_Init(void) {
   /* add threads, ... */
 
 
-  vStartStreamBufferInterruptInit();
+  
   /* USER CODE END RTOS_THREADS */
 
 }
@@ -163,7 +189,10 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+
+
   /* Infinite loop */
+  
   for(;;)
   {
 //    osMutexWait(USART1_TX_MutexHandle, portMAX_DELAY);

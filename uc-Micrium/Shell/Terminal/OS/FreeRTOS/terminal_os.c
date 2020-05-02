@@ -120,9 +120,10 @@
  void uc_shell_task(void *argument)
 {
   /* USER CODE BEGIN uc_shell_task */
-    Mem_Init();
 
-    ShShell_Init();
+
+  vStartStreamBufferInterruptInit();
+
 
   /* Infinite loop */
     Terminal_Task(argument);
