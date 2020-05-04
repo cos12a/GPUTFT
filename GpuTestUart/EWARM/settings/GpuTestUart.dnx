@@ -46,11 +46,11 @@
         <ITMlogFile>$PROJ_DIR$\ITM.log</ITMlogFile>
     </SWOTraceHWSettings>
     <DebugChecksum>
-        <Checksum>882139244</Checksum>
+        <Checksum>2348978580</Checksum>
     </DebugChecksum>
     <Disassembly>
-        <InstrCount>0</InstrCount>
         <MixedMode>1</MixedMode>
+        <InstrCount>0</InstrCount>
     </Disassembly>
     <CodeCoverage>
         <Enabled>0</Enabled>
@@ -63,6 +63,18 @@
     <watch_formats>
         <Fmt0>{W}1:isrflags	4	0</Fmt0>
     </watch_formats>
+    <DriverProfiling>
+        <Enabled>0</Enabled>
+        <Mode>1</Mode>
+        <Graph>0</Graph>
+        <Symbiont>0</Symbiont>
+    </DriverProfiling>
+    <CallStackLog>
+        <Enabled>0</Enabled>
+    </CallStackLog>
+    <CallStackStripe>
+        <ShowTiming>1</ShowTiming>
+    </CallStackStripe>
     <Trace2>
         <Enabled>0</Enabled>
         <ShowSource>0</ShowSource>
@@ -117,6 +129,13 @@
         <ShowTimeSum>1</ShowTimeSum>
         <SumSortOrder>0</SumSortOrder>
     </EventLog>
+    <DisassembleMode>
+        <mode>1</mode>
+    </DisassembleMode>
+    <Breakpoints2>
+        <Bp0>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\userCode\shell_app.c}.870.17" 0 0 1 "" 0 "" 0</Bp0>
+        <Count>1</Count>
+    </Breakpoints2>
     <TermIOLog>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
@@ -126,31 +145,13 @@
         <LogFile>_ ""</LogFile>
         <Category>_ 0</Category>
     </LogFile>
-    <DriverProfiling>
-        <Enabled>0</Enabled>
-        <Mode>1</Mode>
-        <Graph>0</Graph>
-        <Symbiont>0</Symbiont>
-    </DriverProfiling>
-    <CallStackLog>
-        <Enabled>0</Enabled>
-    </CallStackLog>
-    <CallStackStripe>
-        <ShowTiming>1</ShowTiming>
-    </CallStackStripe>
+    <Aliases>
+        <Count>0</Count>
+        <SuppressDialog>0</SuppressDialog>
+    </Aliases>
     <PowerProbe>
         <Frequency>10000</Frequency>
         <Probe0>I0</Probe0>
         <ProbeSetup0>2 1 1 2 0 0</ProbeSetup0>
     </PowerProbe>
-    <DisassembleMode>
-        <mode>1</mode>
-    </DisassembleMode>
-    <Breakpoints2>
-        <Count>0</Count>
-    </Breakpoints2>
-    <Aliases>
-        <Count>0</Count>
-        <SuppressDialog>0</SuppressDialog>
-    </Aliases>
 </settings>

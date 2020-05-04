@@ -96,15 +96,20 @@ osSemaphoreId_t USART2_SendHandle;
 const osSemaphoreAttr_t USART2_Send_attributes = {
   .name = "USART2_Send"
 };
+/* Definitions for USART1_Rx */
+osSemaphoreId_t USART1_RxHandle;
+const osSemaphoreAttr_t USART1_Rx_attributes = {
+  .name = "USART1_Rx"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
   /* Definitions for USART1_Rx */
-osSemaphoreId_t USART1_RxHandle;
-const osSemaphoreAttr_t USART1_Rx_attributes = {
-  .name = "USART1_Rx"
-}; 
+//osSemaphoreId_t USART1_RxHandle;
+//const osSemaphoreAttr_t USART1_Rx_attributes = {
+//  .name = "USART1_Rx"
+//}; 
   
 /* USER CODE END FunctionPrototypes */
 
@@ -142,10 +147,13 @@ void MX_FREERTOS_Init(void) {
   /* creation of USART2_Send */
   USART2_SendHandle = osSemaphoreNew(1, 1, &USART2_Send_attributes);
 
+  /* creation of USART1_Rx */
+//  USART1_RxHandle = osSemaphoreNew(1, 0, &USART1_Rx_attributes);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
 
-  USART1_RxHandle osSemaphoreNew(1, 1, &USART1_Rx_attributes);
+  USART1_RxHandle = osSemaphoreNew(1, 0, &USART1_Rx_attributes);
   
   /* USER CODE END RTOS_SEMAPHORES */
 

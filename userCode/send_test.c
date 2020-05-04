@@ -55,7 +55,5 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
       GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
     }
 
-
-
 }
 

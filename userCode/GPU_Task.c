@@ -186,8 +186,8 @@ void usart1TxTask(void *argument)
 }
 
 
-void GPU_tx_and_rx_hand(void         *pbuf,
-                                   CPU_SIZE_T    buf_len)
+void GPU_tx_and_rx_hand(void           *pbuf,
+                                   uint16_t    buf_len)
 {
 
 

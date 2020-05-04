@@ -61,6 +61,13 @@
 
 #include "usart.h"
 #include "lib_def.h"
+#include  "lib_mem.h"
+#include  "lib_math.h"
+#include  "lib_str.h"
+
+#include "shell.h"
+#include "sh_shell.h"
+
 
 
 #define sbiSTREAM_BUFFER_LENGTH_BYTES		    ( ( size_t ) 64 )
@@ -114,8 +121,8 @@ static const char UC_SHELL_INIT_ERR[] = "\r\nuC-Shell init is Error.\r\n";
 static const char ShShell_Init_err[] = "ShShell_Init is Err.\r\n";
 static const char ShShell_Init_done[] =  "ShShell_Init is Done.\r\n";
 static const char userShell_Init_Done[] = "User shell init is done.\r\n";
-static const char userShell_Init_Err[] = "User shell init is error:\r\n";
-
+static const char userShell_Init_Err[] = "User shell init is error.\r\n";
+static const char GPU_SNED_TEST[] = "\r\nGPU Seria prot test success.\r\n";
 
 /* The string to task is looking for, which must be a substring of
 pcStringToSend. */
@@ -130,6 +137,7 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart);
 static HAL_StatusTypeDef UART_EndTransmit_IT(UART_HandleTypeDef *huart);
 static void UART_DMAAbortOnError(DMA_HandleTypeDef *hdma);
 static void UART_EndRxTransfer(UART_HandleTypeDef *huart);
+static void HAL_UART_Tx2CpltCallback(UART_HandleTypeDef *huart);
 
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
@@ -179,6 +187,7 @@ void vStartStreamBufferInterruptInit( void )
     }
     TerminalSerial_Wr((void *)ShShell_Init_done, sizeof( ShShell_Init_done ));
     
+    GPU_TFT_send_byte((void *)GPU_SNED_TEST, sizeof(GPU_SNED_TEST));
 
 //    TerminalSerial_Wr( (void *)pcStringToSend, stlen(pcStringToSend));
 //    USAR2_send_byte((void *)pcString2ToSend, sizeof(pcString2ToSend));
@@ -581,7 +590,9 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    osSemaphoreRelease(USART1_RxHandle);        // 释放接收完成信号量
+    if ( huart->Instance == USART1 ){
+        osSemaphoreRelease(USART1_RxHandle);        // 释放接收完成信号量
+    }
 }
 
 
@@ -835,31 +846,53 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart)
 #define GPU_RETURN_OK   "OK"
 
 HAL_StatusTypeDef GPU_tx_and_rx_hand(void         *pbuf,
-                                   CPU_SIZE_T    buf_len)
+                                   uint16_t    buf_len)
 {
 
     osStatus_t stat;
     uint8_t sendCnt = 0u;
     HAL_StatusTypeDef reStat = HAL_OK;
-    const TickType_t xBlockTime = pdMS_TO_TICKS( 400ul );       //等待500ms
+    const TickType_t xBlockTime = pdMS_TO_TICKS( 500ul );       //等待500ms
 
     for (sendCnt =0; sendCnt <= 3u; sendCnt ++) {
         
-        GPU_TFT_send_byte(pbuf, buf_len);
+        GPU_TFT_send_byte(pbuf, buf_len);           /// 发送数据
+        
         Mem_Set((void     *)&Rx1_Buffer[0],                           /* Clr cur working dir path.                            */
-            (CPU_INT08U) 0x00u,
-            (sizeof) Rx1_Buffer);
-        reStat = HAL_UART_Receive_IT (&huart1, Rx1_Buffer, 2u);
-        stat = osSemaphoreAcquire(USART1_SendHandle, xBlockTime );
-        if ( osOK == stat) {
-            if (( Mem_Cmp(GPU_RETURN_OK, Rx1_Buffer, 2) == DEF_YES) {
+                            (CPU_INT08U) 0x00u,
+                            sizeof (Rx1_Buffer));
+    
+        reStat = HAL_UART_Receive_IT (&GPU_TFT_USART_PORT, Rx1_Buffer, 2u);         //开始接收数据
+        stat = osSemaphoreAcquire(USART1_RxHandle, xBlockTime );         // 等待接收信号量接收状态500mS延时.
+
+        if ( osOK == stat) {        
+            if (( Mem_Cmp(GPU_RETURN_OK, Rx1_Buffer, 2) == DEF_YES)) {
                 return ( HAL_OK );          // 正常退出.
              }
+        } else {                        // 清除本次接收,再进行下一次接收
+            HAL_UART_AbortReceive_IT(&GPU_TFT_USART_PORT);          // 接收未成功中止接收数据
         }
+        
     }
     return( reStat );               // 错误 退出.
 }
 
 
-
+/**
+  * @brief  UART Abort Receive Complete callback.
+  * @param  huart UART handle.
+  * @retval None
+  */
+void HAL_UART_AbortReceiveCpltCallback(UART_HandleTypeDef *huart)
+{
+  /* Prevent unused argument(s) compilation warning */
+//  if ( huart->Instance == USART1 )
+//  {
+//      osSemaphoreRelease(USART1_SendHandle);
+//  }
+    UNUSED(huart);
+  /* NOTE : This function should not be modified, when the callback is needed,
+            the HAL_UART_AbortReceiveCpltCallback can be implemented in the user file.
+   */
+}
 
