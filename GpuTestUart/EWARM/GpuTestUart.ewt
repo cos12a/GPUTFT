@@ -1423,6 +1423,9 @@
             <name>$PROJ_DIR$\..\..\userCode\app_cfg.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\userCode\GPU_Serial.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\userCode\send_test.c</name>
         </file>
         <file>

@@ -73,39 +73,27 @@
 #define sbiSTREAM_BUFFER_LENGTH_BYTES		    ( ( size_t ) 64 )
 #define sbiSTREAM_BUFFER_TRIGGER_LEVEL_10	    ( ( BaseType_t ) 10 )
 #define sbiSTREAM_BUFFER_TRIGGER_LEVEL_2	    ( ( BaseType_t ) 2 )
+#define sbiSTREAM_BUFFER_TRIGGER_LEVEL_1	    ( ( BaseType_t ) 1 )
 
-#define RX1_BUFFER_LENGTH_BYTES                 32u
-#define TX1_BUFFER_LENGTH_BYTES                 32u
+
 #define RX2_BUFFER_LENGTH_BYTES                 32u
 #define TX2_BUFFER_LENGTH_BYTES                 32u
 
-static uint8_t Rx1_Buffer[ RX1_BUFFER_LENGTH_BYTES ];
+
 static uint8_t Rx2_Buffer[ RX2_BUFFER_LENGTH_BYTES ];
-static uint8_t Tx1_Buffer[ TX1_BUFFER_LENGTH_BYTES ];
 static uint8_t Tx2_Buffer[ TX2_BUFFER_LENGTH_BYTES ];
 
 /* The stream buffer that is used to send data from an interrupt to the task. */
 //static StreamBufferHandle_t xStreamBuffer = NULL;
-static StreamBufferHandle_t Rx1StreamBuffer = NULL;
+
 //static StreamBufferHandle_t Rx2StreamBuffer = NULL;
 StreamBufferHandle_t Rx2StreamBuffer = NULL;
 
-
-extern osMutexId_t USART1_TX_MutexHandle;
-extern osMutexId_t USART2_TX_MutexHandle;
-/* Definitions for USART1_Send */
-extern osSemaphoreId_t USART1_SendHandle;
 /* Definitions for USART2_Send */
 extern osSemaphoreId_t USART2_SendHandle;
-extern osSemaphoreId_t USART1_RxHandle;     // USART1_RxHandle Semaphore
 
-
-#define GPU_TFT_USART_PORT                      huart1
-#define GPU_TFT_USART_MUTEXID                   USART1_TX_MutexHandle
-#define GPU_TFT_USART_BUFFER                      Rx1StreamBuffer
-
-#define UC_SHELL_USART_PORT                     huart2
-#define UC_SHELL_USART_MUTEXID                  USART2_TX_MutexHandle
+#define UC_SHELL_USART_PORT                         huart2
+#define UC_SHELL_USART_MUTEXID                      USART2_TX_MutexHandle
 #define UC_SHELL_USART_BUFFER                      Rx2StreamBuffer
 
 
@@ -122,7 +110,6 @@ static const char ShShell_Init_err[] = "ShShell_Init is Err.\r\n";
 static const char ShShell_Init_done[] =  "ShShell_Init is Done.\r\n";
 static const char userShell_Init_Done[] = "User shell init is done.\r\n";
 static const char userShell_Init_Err[] = "User shell init is error.\r\n";
-static const char GPU_SNED_TEST[] = "\r\nGPU Seria prot test success.\r\n";
 
 /* The string to task is looking for, which must be a substring of
 pcStringToSend. */
@@ -133,14 +120,20 @@ pcStringToSend. */
 
 static void HAL_UART_Rx1CpltCallback(UART_HandleTypeDef *huart);
 static void HAL_UART_Rx2CpltCallback(UART_HandleTypeDef *huart);
-static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart);
+//static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart);
 static HAL_StatusTypeDef UART_EndTransmit_IT(UART_HandleTypeDef *huart);
 static void UART_DMAAbortOnError(DMA_HandleTypeDef *hdma);
 static void UART_EndRxTransfer(UART_HandleTypeDef *huart);
 static void HAL_UART_Tx2CpltCallback(UART_HandleTypeDef *huart);
+static HAL_StatusTypeDef UART_Receive_IT(UART_HandleTypeDef *huart);
 
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
+
+HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart, 
+                                                uint8_t *pData, uint16_t Size);
+
+
 
 CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
                                CPU_SIZE_T   buf_len);
@@ -156,14 +149,6 @@ static uint32_t ulCycleCount = 0;
 void vStartStreamBufferInterruptInit( void )
 {
 
-    
-
-	/* Create the stream buffer that sends data from the interrupt to the
-	task, and create the task. */
-	Rx1StreamBuffer = xStreamBufferCreate( /* The buffer length in bytes. */
-										 sbiSTREAM_BUFFER_LENGTH_BYTES,
-										 /* The stream buffer's trigger level. */
-										 sbiSTREAM_BUFFER_TRIGGER_LEVEL_2 );
 	/* Create the stream buffer that sends data from the interrupt to the
 	task, and create the task. */
 	Rx2StreamBuffer = xStreamBufferCreate( /* The buffer length in bytes. */
@@ -173,7 +158,9 @@ void vStartStreamBufferInterruptInit( void )
 
     Mem_Init();
 //	HAL_UART_Receive_IT(&huart1, Rx1_Buffer, 1u);
-	HAL_UART_Receive_IT(&huart2, Rx2_Buffer, 1u);    
+    
+
+	user_UART_Receive_IT(&huart2, Rx2_Buffer, 1u);    
     if (Shell_Init()!= DEF_OK)
     {
         TerminalSerial_Wr((void *)UC_SHELL_INIT_ERR, sizeof( UC_SHELL_INIT_ERR ));
@@ -187,7 +174,7 @@ void vStartStreamBufferInterruptInit( void )
     }
     TerminalSerial_Wr((void *)ShShell_Init_done, sizeof( ShShell_Init_done ));
     
-    GPU_TFT_send_byte((void *)GPU_SNED_TEST, sizeof(GPU_SNED_TEST));
+
 
 //    TerminalSerial_Wr( (void *)pcStringToSend, stlen(pcStringToSend));
 //    USAR2_send_byte((void *)pcString2ToSend, sizeof(pcString2ToSend));
@@ -195,90 +182,6 @@ void vStartStreamBufferInterruptInit( void )
     
 }
 /*-----------------------------------------------------------*/
-#if 0
-
-static void prvReceivingTask( void *pvParameters )
-{
-char cRxBuffer[ 20 ];
-BaseType_t xNextByte = 0;
-
-	/* Remove warning about unused parameters. */
-	( void ) pvParameters;
-
-	/* Make sure the string will fit in the Rx buffer, including the NULL
-	terminator. */
-	configASSERT( sizeof( cRxBuffer ) > strlen( pcStringToReceive ) );
-
-	/* Make sure the stream buffer has been created. */
-	configASSERT( xStreamBuffer != NULL );
-
-	/* Start with the Rx buffer in a known state. */
-	memset( cRxBuffer, 0x00, sizeof( cRxBuffer ) );
-
-	for( ;; )
-	{
-		/* Keep receiving characters until the end of the string is received.
-		Note:  An infinite block time is used to simplify the example.  Infinite
-		block times are not recommended in production code as they do not allow
-		for error recovery. */
-		xStreamBufferReceive( /* The stream buffer data is being received from. */
-							  xStreamBuffer,
-							  /* Where to place received data. */
-							  ( void * ) &( cRxBuffer[ xNextByte ] ),
-							  /* The number of bytes to receive. */
-							  sizeof( char ),
-							  /* The time to wait for the next data if the buffer
-							  is empty. */
-							  portMAX_DELAY );
-
-		/* If xNextByte is 0 then this task is looking for the start of the
-		string, which is 'H'. */
-		if( xNextByte == 0 )
-		{
-			if( cRxBuffer[ xNextByte ] == 'H' )
-			{
-				/* The start of the string has been found.  Now receive
-				characters until the end of the string is found. */
-				xNextByte++;
-			}
-		}
-		else
-		{
-			/* Receiving characters while looking for the end of the string,
-			which is an 'S'. */
-			if( cRxBuffer[ xNextByte ] == 'S' )
-			{
-				/* The string has now been received.  Check its validity. */
-				if( strcmp( cRxBuffer, pcStringToReceive ) != 0 )
-				{
-					xDemoStatus = pdFAIL;
-				}
-
-				/* Return to start looking for the beginning of the string
-				again. */
-				memset( cRxBuffer, 0x00, sizeof( cRxBuffer ) );
-				xNextByte = 0;
-
-				/* Increment the cycle count as an indication to the check task
-				that this demo is still running. */
-				if( xDemoStatus == pdPASS )
-				{
-					ulCycleCount++;
-				}
-			}
-			else
-			{
-				/* Receive the next character the next time around, while
-				continuing to look for the end of the string. */
-				xNextByte++;
-
-				configASSERT( ( size_t ) xNextByte < sizeof( cRxBuffer ) );
-			}
-		}
-	}
-}
-
-#endif
 
 /**
   * @brief  Wraps up transmission in non blocking mode.
@@ -371,7 +274,7 @@ void user_UART_IRQHandler(UART_HandleTypeDef *huart)
     /* UART in mode Receiver -------------------------------------------------*/
     if (((isrflags & USART_SR_RXNE) != RESET) && ((cr1its & USART_CR1_RXNEIE) != RESET))
     {
-      user_UART_Receive_IT(huart);
+      UART_Receive_IT(huart);
       return;
     }
   }
@@ -408,7 +311,7 @@ void user_UART_IRQHandler(UART_HandleTypeDef *huart)
 	  /* UART in mode Receiver -----------------------------------------------*/
 	  if (((isrflags & USART_SR_RXNE) != RESET) && ((cr1its & USART_CR1_RXNEIE) != RESET))
 	  {
-		user_UART_Receive_IT(huart);
+		UART_Receive_IT(huart);
 	  }
 
 	  /* If Overrun error occurs, or if any error occurs in DMA mode reception,
@@ -504,7 +407,7 @@ void user_UART_IRQHandler(UART_HandleTypeDef *huart)
   *                the configuration information for the specified UART module.
   * @retval HAL status
   */
-static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
+static HAL_StatusTypeDef UART_Receive_IT(UART_HandleTypeDef *huart)
 {
   uint16_t *tmp;
 
@@ -535,38 +438,30 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
       {
         *huart->pRxBuffPtr++ = (uint8_t)(huart->Instance->DR & (uint8_t)0x007F);
       }
+      huart->RxXferSize ++;
     }
+    
 
 //    if (--huart->RxXferCount == 0U)
 //    {
-//      /* Disable the UART Data Register not empty Interrupt */
+      /* Disable the UART Data Register not empty Interrupt */
 //      __HAL_UART_DISABLE_IT(huart, UART_IT_RXNE);
-//
-//      /* Disable the UART Parity Error Interrupt */
+
+      /* Disable the UART Parity Error Interrupt */
 //      __HAL_UART_DISABLE_IT(huart, UART_IT_PE);
-//
-//      /* Disable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+
+      /* Disable the UART Error Interrupt: (Frame error, noise error, overrun error) */
 //      __HAL_UART_DISABLE_IT(huart, UART_IT_ERR);
 
       /* Rx process is completed, restore huart->RxState to Ready */
-//      huart->RxState = HAL_UART_STATE_READY;
+      huart->RxState = HAL_UART_STATE_BUSY_RX;
 
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
       /*Call registered Rx complete callback*/
       huart->RxCpltCallback(huart);
 #else
       /*Call legacy weak Rx complete callback*/
-//      if ( huart->Instance == USART1 )
-//      {      
-//      	HAL_UART_Rx1CpltCallback(huart);
-//      }
-//      else if ( huart->Instance == USART2 )
-//      {
       	HAL_UART_Rx2CpltCallback(huart);
-//
-//      }
-//      else
-//      	HAL_UART_RxCpltCallback(huart);
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
 
       return HAL_OK;
@@ -580,20 +475,60 @@ static HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart)
 }
 
 
-//static void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-//{
-//	UNUSED(huart);
-//}
 
-
-// USART1 Rx完成中断(GPU串口)
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+/**
+  * @brief  Receives an amount of data in non blocking mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the received data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 available through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be received.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef user_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
 {
-    if ( huart->Instance == USART1 ){
-        osSemaphoreRelease(USART1_RxHandle);        // 释放接收完成信号量
+  /* Check that a Rx process is not already ongoing */
+  if (huart->RxState == HAL_UART_STATE_READY)
+  {
+    if ((pData == NULL) || (Size == 0U))
+    {
+      return HAL_ERROR;
     }
+
+    /* Process Locked */
+    __HAL_LOCK(huart);
+
+    huart->pRxBuffPtr = pData;
+    huart->RxXferSize = 0u;
+    huart->RxXferCount = 0u;
+
+    huart->ErrorCode = HAL_UART_ERROR_NONE;
+    huart->RxState = HAL_UART_STATE_BUSY_RX;
+
+    /* Process Unlocked */
+    __HAL_UNLOCK(huart);
+
+    /* Enable the UART Parity Error Interrupt */
+    __HAL_UART_ENABLE_IT(huart, UART_IT_PE);
+
+    /* Enable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+    __HAL_UART_ENABLE_IT(huart, UART_IT_ERR);
+
+    /* Enable the UART Data Register not empty Interrupt */
+    __HAL_UART_ENABLE_IT(huart, UART_IT_RXNE);
+
+    return HAL_OK;
+  }
+  else
+  {
+    return HAL_BUSY;
+  }
 }
+
+
+
 
 
 // USART2 Rx完成时中断(uC-Shell使用串口)
@@ -606,9 +541,13 @@ static void HAL_UART_Rx2CpltCallback(UART_HandleTypeDef *huart)
   const BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
   size_t sendCnt = xStreamBufferSendFromISR( UC_SHELL_USART_BUFFER,
-                                   ( const void * ) huart->pRxBuffPtr,
+                                   ( const void * ) Rx2_Buffer,
                                    huart->RxXferSize,
                                    (BaseType_t *) &xHigherPriorityTaskWoken );
+
+    huart->RxXferCount = 0u;
+    huart->RxXferSize = 0u;
+    huart->pRxBuffPtr = Rx2_Buffer;
     if ( sendCnt == 0)
     {
 
@@ -653,35 +592,6 @@ CPU_INT08U  TerminalSerial_RdByte (void)
 
 
 
-CPU_INT08U  GPU_Serial_RdByte (void)
-{
-    char rxData;
-    size_t xReturned;
-    xReturned = xStreamBufferReceive( /* The stream buffer data is being received from. */
-                          GPU_TFT_USART_BUFFER,
-                          /* Where to place received data. */
-                          ( void * ) &( rxData ),
-                          /* The number of bytes to receive. */
-                          sizeof( char ),
-                          /* The time to wait for the next data if the buffer
-                          is empty. */
-                          portMAX_DELAY );
-    if ( xReturned <= sizeof( char ) )
-    {
-        return ( 0u );
-    }
-    return ( rxData );
-}
-
-//taskENTER_CRITICAL();
-//{
-//    xReturned = xStreamBufferSendFromISR( xStreamBuffer, ( void * ) pucData, x6ByteLength, NULL );
-//}
-//taskEXIT_CRITICAL();
-//prvCheckExpectedState( xReturned == x6ByteLength );
-//
-
-
 /**
   * @brief  Tx Transfer completed callbacks.
   * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
@@ -691,24 +601,10 @@ CPU_INT08U  GPU_Serial_RdByte (void)
 
 static void HAL_UART_Tx2CpltCallback(UART_HandleTypeDef *huart)
 {
-  /* Prevent unused argument(s) compilation warning */
     if ( huart->Instance == USART2 )
 	{
         osSemaphoreRelease(USART2_SendHandle);
 	}
-  /* NOTE: This function should not be modified, when the callback is needed,
-           the HAL_UART_TxCpltCallback could be implemented in the user file
-   */
-}
-
-// 发送完成中断
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        osSemaphoreRelease(USART1_SendHandle);
-    }
 
 }
 
@@ -736,51 +632,18 @@ CPU_INT16S  TerminalSerial_Wr (void        *pbuf,
 {
 	HAL_StatusTypeDef sendStatus;
 	 
-//	xSemaphoreTake(USART1_TX_MutexHandle, portMAX_DELAY);
-//    osMutexWait(USART1_TX_MutexHandle, portMAX_DELAY);
     osSemaphoreAcquire(USART2_SendHandle, osWaitForever );
 	sendStatus =  HAL_UART_Transmit_DMA(&UC_SHELL_USART_PORT, (uint8_t *)pbuf, buf_len);
-//	xSemaphoreGive(USART1_TX_MutexHandle);
-//    osMutexRelease(UC_SHELL_USART_MUTEXID);
-
 	return( (CPU_INT16S) sendStatus );
 }
 
 
 void  TerminalSerial_WrByte (CPU_INT08U c)
 {
-
-    HAL_StatusTypeDef sendStatus;
-	 
-//	xSemaphoreTake(USART1_TX_MutexHandle, portMAX_DELAY);
-//#if UC_SHELL_USART_PORT == huart2
     osSemaphoreAcquire(USART2_SendHandle, osWaitForever );
-
-	sendStatus =  HAL_UART_Transmit_DMA(&UC_SHELL_USART_PORT, (uint8_t *)&c, sizeof(char));
-    
-//    osMutexRelease(UC_SHELL_USART_MUTEXID);
-//	xSemaphoreGive(USART1_TX_MutexHandle);
-//	return( (CPU_INT16S) sendStatus );
-
+	HAL_UART_Transmit_DMA(&UC_SHELL_USART_PORT, (uint8_t *)&c, sizeof(char));
 }
 
-
-
-
-
-HAL_StatusTypeDef GPU_TFT_send_byte( void *pbuf,	uint16_t buf_len)
-{
-
-	HAL_StatusTypeDef sendStatus;
-
-//	osqMutexAcquire(GPU_TFT_USART_MUTEXID, osWaitForever);
-    osSemaphoreAcquire(USART1_SendHandle, osWaitForever );
-	sendStatus =  HAL_UART_Transmit_DMA(&GPU_TFT_USART_PORT, (uint8_t *)pbuf, buf_len);
-	//	xSemaphoreGive(USART1_TX_MutexHandle);
-//	osMutexRelease(GPU_TFT_USART_MUTEXID);
-	return( (HAL_StatusTypeDef) sendStatus );
-
-}
 
 
 
@@ -793,7 +656,62 @@ HAL_StatusTypeDef GPU_TFT_send_byte( void *pbuf,	uint16_t buf_len)
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
-  UNUSED(huart);
+
+    if ( huart->Instance == USART2) {
+
+        /* Disable the UART Data Register not empty Interrupt */
+        __HAL_UART_DISABLE_IT(huart, UART_IT_RXNE);
+
+        /* Disable the UART Parity Error Interrupt */
+        __HAL_UART_DISABLE_IT(huart, UART_IT_PE);
+
+        /* Disable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+        __HAL_UART_DISABLE_IT(huart, UART_IT_ERR);
+
+        switch( huart->ErrorCode )   {
+
+            case HAL_UART_ERROR_NONE:  
+                break;
+            case HAL_UART_ERROR_PE: 
+                __HAL_UART_CLEAR_PEFLAG(huart);
+                break;
+            case HAL_UART_ERROR_NE:    
+                __HAL_UART_CLEAR_NEFLAG(huart);
+                break;
+            case HAL_UART_ERROR_FE:   
+                __HAL_UART_CLEAR_FEFLAG(huart);
+                break;
+            case HAL_UART_ERROR_ORE:    
+                __HAL_UART_CLEAR_OREFLAG(huart);
+                break;
+            case HAL_UART_ERROR_DMA: 
+//                __HAL_UART_CLEAR_FLAG(huart, );
+                break;
+            default:
+                break;
+                
+                
+            
+        }
+        huart->ErrorCode = HAL_UART_ERROR_NONE;
+
+        /* Rx process is completed, restore huart->RxState to Ready */
+        huart->RxState = HAL_UART_STATE_BUSY_RX;
+
+        /* Enable the UART Parity Error Interrupt */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_PE);
+
+        /* Enable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_ERR);
+
+        /* Enable the UART Data Register not empty Interrupt */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_RXNE);
+        huart->RxXferCount = 0u;
+        huart->RxXferSize = 0u;
+        huart->pRxBuffPtr = Rx2_Buffer;
+        
+
+    }
   /* NOTE: This function should not be modified, when the callback is needed,
            the HAL_UART_ErrorCallback could be implemented in the user file
    */
@@ -833,66 +751,17 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart)
   /* Disable RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
 //  CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
 //  CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
-    UNUSED(huart);
+    if ( huart->Instance == USART2) {
+        huart->RxXferCount = 0u;
+        huart->RxXferSize = 0u;
+        huart->ErrorCode |= HAL_UART_ERROR_NONE;
+//        while(1);
+    }
+        
   /* At end of Rx process, restore huart->RxState to Ready */
 //  huart->RxState = HAL_UART_STATE_READY;
 }
 
 
 
-// 将GPU数据发送出去,并接收回来判断是否OK.如果超时则再发送一次,
-// 如果同一数据三次发送失败则返回发送Error
-
-#define GPU_RETURN_OK   "OK"
-
-HAL_StatusTypeDef GPU_tx_and_rx_hand(void         *pbuf,
-                                   uint16_t    buf_len)
-{
-
-    osStatus_t stat;
-    uint8_t sendCnt = 0u;
-    HAL_StatusTypeDef reStat = HAL_OK;
-    const TickType_t xBlockTime = pdMS_TO_TICKS( 500ul );       //等待500ms
-
-    for (sendCnt =0; sendCnt <= 3u; sendCnt ++) {
-        
-        GPU_TFT_send_byte(pbuf, buf_len);           /// 发送数据
-        
-        Mem_Set((void     *)&Rx1_Buffer[0],                           /* Clr cur working dir path.                            */
-                            (CPU_INT08U) 0x00u,
-                            sizeof (Rx1_Buffer));
-    
-        reStat = HAL_UART_Receive_IT (&GPU_TFT_USART_PORT, Rx1_Buffer, 2u);         //开始接收数据
-        stat = osSemaphoreAcquire(USART1_RxHandle, xBlockTime );         // 等待接收信号量接收状态500mS延时.
-
-        if ( osOK == stat) {        
-            if (( Mem_Cmp(GPU_RETURN_OK, Rx1_Buffer, 2) == DEF_YES)) {
-                return ( HAL_OK );          // 正常退出.
-             }
-        } else {                        // 清除本次接收,再进行下一次接收
-            HAL_UART_AbortReceive_IT(&GPU_TFT_USART_PORT);          // 接收未成功中止接收数据
-        }
-        
-    }
-    return( reStat );               // 错误 退出.
-}
-
-
-/**
-  * @brief  UART Abort Receive Complete callback.
-  * @param  huart UART handle.
-  * @retval None
-  */
-void HAL_UART_AbortReceiveCpltCallback(UART_HandleTypeDef *huart)
-{
-  /* Prevent unused argument(s) compilation warning */
-//  if ( huart->Instance == USART1 )
-//  {
-//      osSemaphoreRelease(USART1_SendHandle);
-//  }
-    UNUSED(huart);
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_UART_AbortReceiveCpltCallback can be implemented in the user file.
-   */
-}
 

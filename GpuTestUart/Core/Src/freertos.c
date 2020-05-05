@@ -148,7 +148,7 @@ void MX_FREERTOS_Init(void) {
   USART2_SendHandle = osSemaphoreNew(1, 1, &USART2_Send_attributes);
 
   /* creation of USART1_Rx */
-//  USART1_RxHandle = osSemaphoreNew(1, 0, &USART1_Rx_attributes);
+  USART1_RxHandle = osSemaphoreNew(1, 1, &USART1_Rx_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
