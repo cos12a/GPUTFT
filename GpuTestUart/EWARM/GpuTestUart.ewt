@@ -1330,6 +1330,15 @@
     <group>
         <name>uC_Micrium</name>
         <group>
+            <name>uC_CLK</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\uc-Micrium\Clk\Source\clk.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\uc-Micrium\Clk\Source\clk.h</name>
+            </file>
+        </group>
+        <group>
             <name>uC_CPU</name>
             <file>
                 <name>$PROJ_DIR$\..\..\uc-Micrium\CPU\IAR\cpu.h</name>
@@ -1421,6 +1430,9 @@
         <name>UserCode</name>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\app_cfg.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\userCode\clk_test.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\GPU_Serial.c</name>

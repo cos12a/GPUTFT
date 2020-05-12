@@ -92,6 +92,9 @@ StreamBufferHandle_t Rx2StreamBuffer = NULL;
 /* Definitions for USART2_Send */
 extern osSemaphoreId_t USART2_SendHandle;
 
+extern osThreadId_t USART2_TXHandle;
+
+
 #define UC_SHELL_USART_PORT                         huart2
 #define UC_SHELL_USART_MUTEXID                      USART2_TX_MutexHandle
 #define UC_SHELL_USART_BUFFER                      Rx2StreamBuffer
@@ -645,8 +648,6 @@ void  TerminalSerial_WrByte (CPU_INT08U c)
 }
 
 
-
-
 /**
   * @brief  UART error callbacks.
   * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
@@ -674,15 +675,19 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
                 break;
             case HAL_UART_ERROR_PE: 
                 __HAL_UART_CLEAR_PEFLAG(huart);
+//                TerminalSerial_Wr(UART_ER_PE_BUF, sizeof(UART_ER_PE_BUF));
                 break;
             case HAL_UART_ERROR_NE:    
                 __HAL_UART_CLEAR_NEFLAG(huart);
+//                TerminalSerial_Wr(UART_ER_NE_BUF, sizeof(UART_ER_NE_BUF));
                 break;
             case HAL_UART_ERROR_FE:   
                 __HAL_UART_CLEAR_FEFLAG(huart);
+//                TerminalSerial_Wr(UART_ER_FE_BUF, sizeof(UART_ER_FE_BUF));
                 break;
             case HAL_UART_ERROR_ORE:    
                 __HAL_UART_CLEAR_OREFLAG(huart);
+//                TerminalSerial_Wr(UART_ER_ORE_BUF, sizeof(UART_ER_ORE_BUF));
                 break;
             case HAL_UART_ERROR_DMA: 
 //                __HAL_UART_CLEAR_FLAG(huart, );
@@ -690,9 +695,10 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
             default:
                 break;
                 
-                
-            
         }
+        xTaskNotifyAndQueryFromISR( USART2_TXHandle, huart->ErrorCode, eSetValueWithOverwrite, NULL, NULL);      // 将错误消息传送出去.
+   
+
         huart->ErrorCode = HAL_UART_ERROR_NONE;
 
         /* Rx process is completed, restore huart->RxState to Ready */
@@ -763,5 +769,68 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart)
 }
 
 
+
+
+
+const char UART_ER_PE_BUF[] = "UART run error call back is :HAL_UART_ERROR_PE";
+const char UART_ER_NE_BUF[] = "UART run error call back is :HAL_UART_ERROR_NE";
+const char UART_ER_FE_BUF[] = "UART run error call back is :HAL_UART_ERROR_FE";
+const char UART_ER_ORE_BUF[] = "UART run error call back is :HAL_UART_ERROR_ORE";
+
+static void send_usart_error_message(uint32_t ErrorCode)
+{
+    
+    switch( ErrorCode )   {
+
+        case HAL_UART_ERROR_NONE:  
+            break;
+        case HAL_UART_ERROR_PE: 
+            TerminalSerial_Wr((void *)UART_ER_PE_BUF, sizeof(UART_ER_PE_BUF));
+            break;
+        case HAL_UART_ERROR_NE:    
+            TerminalSerial_Wr((void *)UART_ER_NE_BUF, sizeof(UART_ER_NE_BUF));
+            break;
+        case HAL_UART_ERROR_FE:   
+            TerminalSerial_Wr((void *)UART_ER_FE_BUF, sizeof(UART_ER_FE_BUF));
+            break;
+        case HAL_UART_ERROR_ORE:    
+            TerminalSerial_Wr((void *)UART_ER_ORE_BUF, sizeof(UART_ER_ORE_BUF));
+            break;
+        case HAL_UART_ERROR_DMA: 
+            break;
+        default:
+            break;
+            
+    }
+}
+
+
+
+//将发送数据传送出去.
+//使用任务间通信.
+/* Constants used in tests when setting/clearing bits. */
+#define notifyUINT32_MAX		( ( uint32_t ) 0xffffffff )
+
+
+void Usart2TxTask(void *argument)
+{
+  /* USER CODE BEGIN Usart2TxTask */
+    uint32_t ulNotifiedValue = 0u;
+  /* Infinite loop */
+  for(;;)
+  {
+//    osDelay(1);
+      xTaskNotifyWait(notifyUINT32_MAX, 0, &ulNotifiedValue, portMAX_DELAY);
+      send_usart_error_message( ulNotifiedValue );
+
+  }
+  /* USER CODE END Usart2TxTask */
+}
+
+
+
+
+//
+// 重定向打印功能.
 
 

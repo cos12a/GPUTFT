@@ -80,6 +80,69 @@
 
 /*
 *********************************************************************************************************
+
+注意：（1）假定包括以下版本的软件模块（或更新的版本）
+*在项目构建中：
+*
+*（a）uC / CPU V1.25
+*（b）uC / LIB V1.29
+*
+*
+*（2）（a）时钟模块基于协调世界时（UTC），并支持
+*以下功能：
+*
+*（1）时区
+*（2）years年
+*（3）seconds秒
+*
+*
+（b）时钟模块不支持夏令时。如果要在应用程序中处理“夏令时”，请相应地设置时区偏�
+��量。
+*
+*（c）与时间戳和世界标准时间（UTC）相关的链接：
+*
+*（1）http://www.timeanddate.com/time/aboututc.html
+*（2）http://www.allanstime.com/Publications/DWA/Science_Timekeeping/TheScienceOfTimekeeping.pdf
+*（3）http://www.cl.cam.ac.uk/~mgk25/time/metrologia-leapsecond.pdf
+*（4）http://www.navcen.uscg.gov/pdf/cgsicMeetings/45/29a%20UTCLeapSecond.ppt
+*
+*
+*（3）（a）当“ CLK_CFG_EXT_EN”被禁用时，时钟模块实现软件维护的时钟/日历（见注4）。
+*
+*（b）（1）当“ CLK_CFG_SIGNAL_EN”被禁用时，软件维护的时钟/
+日历基于周期性的延迟或超时。
+*
+*（2）当启用“ CLK_CFG_SIGNAL_EN”时，软件维护的时钟/日历基于周期性信号或定时器。
+*
+*
+（c）启用软件维护时钟时，构建中必须包含时钟模块的OS相关文件和相应的OS应用程序配置
+。
+*
+*
+*（4）（a）启用“ 
+CLK_CFG_EXT_EN”时，时钟模块通过外部时间戳初始化，获取和设置其时间戳。
+*
+*（b）（1）外部时间戳记可以通过以下方式维护：
+*
+*（A）硬件（例如，通过硬件时钟芯片）
+*（B）来自另一个应用程序（例如SNTPc）
+*
+*（2）开发人员定义的应用程序/ BSP功能必须访问外部时间戳，这些功能必须遵循特定硬件
+/应用程序的功能要求。
+*
+*另请参见“ net.h Clk_ExtTS_Init（）”，
+*'net.h Clk_ExtTS_Get（）'，
+*＆'net.h Clk_ExtTS_Set（）'。
+
+*********************************************************************************************************
+*/
+
+
+
+
+
+/*
+*********************************************************************************************************
 *                                             INCLUDE FILES
 *********************************************************************************************************
 */
@@ -357,6 +420,20 @@ void  Clk_TaskHandler (void)
     }
 }
 #endif
+
+// 定时器中断产生1 sec回调函数.
+#include "rtc.h"
+void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
+{
+    CPU_CRITICAL_ENTER();
+    if (Clk_TS_UTC_sec < CLK_TS_SEC_MAX) {
+        Clk_TS_UTC_sec++;
+    }
+    CPU_CRITICAL_EXIT();
+}
+
+
+
 
 
 /*

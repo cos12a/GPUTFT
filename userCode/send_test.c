@@ -21,6 +21,7 @@ const int8_t GPU_Test[] = "DR2;CLS(0);DS24(4,0,'错误 ',1);BOS(0,30,319,130,11)
 #define CMD_COUNT      (sizeof(sendCMD)/sizeof(sendCMD[0]))
 #define ADD_CMD_QUANTITY                4
 
+extern void AppTaskStart(void * p_arg);
 
 void RxReceive(void *argument)
 {
@@ -51,6 +52,7 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
      if ( ADD_CMD_QUANTITY <= cmdCnt) 
      {
         cmdCnt = 0u;
+        AppTaskStart(NULL);
      }
       GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
     }

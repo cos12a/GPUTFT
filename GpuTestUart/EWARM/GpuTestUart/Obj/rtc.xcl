@@ -48,6 +48,10 @@ E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Lib\Cfg
 -I
 E:\DiskE\ProgramProject\GPUTFT\userCode
 -I
+E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Cfg
+-I
+E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Source
+-I
 E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc
 -I
 E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc\c
@@ -89,6 +93,10 @@ E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Lib
 E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Lib\Cfg
 -I
 E:\DiskE\ProgramProject\GPUTFT\userCode
+-I
+E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Cfg
+-I
+E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Source
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

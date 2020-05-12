@@ -56,6 +56,7 @@ build queue.pbi : index queue.xcl
 build stream_buffer.pbi : index stream_buffer.xcl
 build tasks.pbi : index tasks.xcl
 build timers.pbi : index timers.xcl
+build clk.pbi : index clk.xcl
 build cpu_core.pbi : index cpu_core.xcl
 build lib_ascii.pbi : index lib_ascii.xcl
 build lib_math.pbi : index lib_math.xcl
@@ -67,6 +68,7 @@ build terminal.pbi : index terminal.xcl
 build terminal_mode.pbi : index terminal_mode.xcl
 build terminal_os.pbi : index terminal_os.xcl
 build terminal_serial.pbi : index terminal_serial.xcl
+build clk_test.pbi : index clk_test.xcl
 build GPU_Serial.pbi : index GPU_Serial.xcl
 build send_test.pbi : index send_test.xcl
 build shell_app.pbi : index shell_app.xcl
@@ -75,9 +77,9 @@ build GpuTestUart_part1.pbi : link stm32f1xx_it.pbi usart.pbi system_stm32f1xx.p
 build GpuTestUart_part2.pbi : link stm32f1xx_hal_flash.pbi stm32f1xx_hal_flash_ex.pbi stm32f1xx_hal_gpio.pbi stm32f1xx_hal_gpio_ex.pbi stm32f1xx_hal_pwr.pbi stm32f1xx_hal_rcc.pbi stm32f1xx_hal_rcc_ex.pbi
 build GpuTestUart_part3.pbi : link stm32f1xx_hal_rtc.pbi stm32f1xx_hal_rtc_ex.pbi stm32f1xx_hal_tim.pbi stm32f1xx_hal_tim_ex.pbi stm32f1xx_hal_uart.pbi cmsis_os2.pbi croutine.pbi
 build GpuTestUart_part4.pbi : link event_groups.pbi heap_4.pbi list.pbi port.pbi queue.pbi stream_buffer.pbi tasks.pbi
-build GpuTestUart_part5.pbi : link timers.pbi cpu_core.pbi lib_ascii.pbi lib_math.pbi lib_mem.pbi lib_str.pbi sh_shell.pbi
-build GpuTestUart_part6.pbi : link shell.pbi terminal.pbi terminal_mode.pbi terminal_os.pbi terminal_serial.pbi GPU_Serial.pbi send_test.pbi
-build GpuTestUart_part7.pbi : link shell_app.pbi
+build GpuTestUart_part5.pbi : link timers.pbi clk.pbi cpu_core.pbi lib_ascii.pbi lib_math.pbi lib_mem.pbi lib_str.pbi
+build GpuTestUart_part6.pbi : link sh_shell.pbi shell.pbi terminal.pbi terminal_mode.pbi terminal_os.pbi terminal_serial.pbi clk_test.pbi
+build GpuTestUart_part7.pbi : link GPU_Serial.pbi send_test.pbi shell_app.pbi
 build GpuTestUart.pbd : link GpuTestUart_part0.pbi GpuTestUart_part1.pbi GpuTestUart_part2.pbi GpuTestUart_part3.pbi GpuTestUart_part4.pbi GpuTestUart_part5.pbi GpuTestUart_part6.pbi GpuTestUart_part7.pbi
 build GpuTestUart.pbw : browsedata GpuTestUart.pbd
 
