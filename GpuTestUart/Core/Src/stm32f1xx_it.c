@@ -246,6 +246,8 @@ void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
 
+//中断这里是调用的自己写的中断入口函数.
+
   /* USER CODE END USART2_IRQn 0 */
   user_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */

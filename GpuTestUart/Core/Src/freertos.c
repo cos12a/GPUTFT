@@ -53,38 +53,28 @@ osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for USART1_TX */
 osThreadId_t USART1_TXHandle;
 const osThreadAttr_t USART1_TX_attributes = {
   .name = "USART1_TX",
   .priority = (osPriority_t) osPriorityRealtime,
-  .stack_size = 128 * 4
+  .stack_size = 256 * 4
 };
 /* Definitions for USART2_TX */
 osThreadId_t USART2_TXHandle;
 const osThreadAttr_t USART2_TX_attributes = {
   .name = "USART2_TX",
   .priority = (osPriority_t) osPriorityRealtime1,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for UC_SHELL_task */
 osThreadId_t UC_SHELL_taskHandle;
 const osThreadAttr_t UC_SHELL_task_attributes = {
   .name = "UC_SHELL_task",
   .priority = (osPriority_t) osPriorityRealtime,
-  .stack_size = 256 * 4
-};
-/* Definitions for USART1_TX_Mutex */
-osMutexId_t USART1_TX_MutexHandle;
-const osMutexAttr_t USART1_TX_Mutex_attributes = {
-  .name = "USART1_TX_Mutex"
-};
-/* Definitions for USART2_TX_Mutex */
-osMutexId_t USART2_TX_MutexHandle;
-const osMutexAttr_t USART2_TX_Mutex_attributes = {
-  .name = "USART2_TX_Mutex"
+  .stack_size = 512 * 4
 };
 /* Definitions for USART1_Send */
 osSemaphoreId_t USART1_SendHandle;
@@ -129,12 +119,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
        
   /* USER CODE END Init */
-  /* Create the mutex(es) */
-  /* creation of USART1_TX_Mutex */
-  USART1_TX_MutexHandle = osMutexNew(&USART1_TX_Mutex_attributes);
-
-  /* creation of USART2_TX_Mutex */
-  USART2_TX_MutexHandle = osMutexNew(&USART2_TX_Mutex_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */

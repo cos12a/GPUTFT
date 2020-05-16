@@ -151,6 +151,9 @@ CLK_CFG_EXT_EN”时，时钟模块通过外部时间戳初始化，获取和设
 #define    CLK_MODULE
 #include  "clk.h"
 
+#include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
+#include "task.h"                       // ARM.FreeRTOS::RTOS:Core
+
 
 /*
 *********************************************************************************************************
@@ -358,6 +361,7 @@ void  Clk_Init (CLK_ERR  *p_err)
     Clk_ExtTS_Init();
 
 #else                                                           /* ------------------- CLK/OS INIT -------------------- */
+
     Clk_OS_Init(p_err);
     if (*p_err != CLK_OS_ERR_NONE) {
          return;
@@ -425,11 +429,14 @@ void  Clk_TaskHandler (void)
 #include "rtc.h"
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
-    CPU_CRITICAL_ENTER();
+    uint32_t isrm;
+//    CPU_CRITICAL_ENTER();
+    isrm = taskENTER_CRITICAL_FROM_ISR();
     if (Clk_TS_UTC_sec < CLK_TS_SEC_MAX) {
         Clk_TS_UTC_sec++;
     }
-    CPU_CRITICAL_EXIT();
+//    CPU_CRITICAL_EXIT();
+    taskEXIT_CRITICAL_FROM_ISR(isrm);
 }
 
 

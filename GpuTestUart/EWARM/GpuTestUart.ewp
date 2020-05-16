@@ -286,7 +286,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -371,6 +371,8 @@
                     <state>E:\DiskE\ProgramProject\GPUTFT\userCode</state>
                     <state>E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Cfg</state>
                     <state>E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Source</state>
+                    <state>E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk</state>
+                    <state>E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Common</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -386,7 +388,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -395,7 +397,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>
@@ -1320,11 +1322,17 @@
     </group>
     <group>
         <name>UserCode</name>
+        <group>
+            <name>CLK</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\uc-Micrium\Clk\clk_cmd.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\userCode\clk_test.c</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\app_cfg.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\userCode\clk_test.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\GPU_Serial.c</name>

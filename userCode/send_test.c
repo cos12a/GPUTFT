@@ -1,7 +1,9 @@
 #include "FreeRTOS.h"
 #include "stream_buffer.h"
 #include "cmsis_os.h"
+#include "common_err.h"
 
+#include "clk_cmd_priv.h"
 
 typedef struct sendTxtCMD
 {
@@ -22,9 +24,11 @@ const int8_t GPU_Test[] = "DR2;CLS(0);DS24(4,0,'错误 ',1);BOS(0,30,319,130,11)
 #define ADD_CMD_QUANTITY                4
 
 extern void AppTaskStart(void * p_arg);
+extern void display_time(void);
 
 void RxReceive(void *argument)
 {
+    RTOS_ERR err;
     const TestTxtCmd sendCMD[ADD_CMD_QUANTITY] = 
     {
         {help, sizeof(help)},
@@ -34,11 +38,15 @@ void RxReceive(void *argument)
 
     };
     static uint8_t cmdCnt = 0u;
-    
-
+    const TickType_t xTicksToWait = pdMS_TO_TICKS( 8000ul );
+        
     (void)argument;
-
-//    for(;;);
+    
+    osDelay( xTicksToWait );
+    
+    ClkCmd_Init(&err);
+    
+    AppTaskStart(NULL);
 
     for(;;)
     {
@@ -52,9 +60,10 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
      if ( ADD_CMD_QUANTITY <= cmdCnt) 
      {
         cmdCnt = 0u;
-        AppTaskStart(NULL);
+        
      }
-      GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
+    GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
+    display_time();
     }
 
 }

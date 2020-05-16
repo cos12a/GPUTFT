@@ -305,7 +305,8 @@
 #include "rtc.h"
 #include <stdio.h>
 #include  "clk.h"
-
+#include "clk_test.h"
+#include "clk_cmd_priv.h"
 
 
 /*
@@ -363,20 +364,22 @@ static const char CLOCK_MAKE_ER[] = "Clock make date/time failed\n\r";
 static const char CLOCK_NOT_VALID[] ="Clock date/time not valid\n\r";
 static const char CLOCK_SET_FAIL[] = "Clock set date/time failed\r\n";
 
-#define SEND_MAX_SIZE           100u
+#define SEND_MAX_SIZE           128u
 void AppTaskStart(void *p_arg)
 {
     char sendBuf[SEND_MAX_SIZE];
     uint16_t sendLen = 0u;
-//    Mem_Clr(sendBuf, sizeof(sendBuf));
 
-    CLK_TS_SEC ts_sec;
+    CLK_TS_SEC ts_sec = 0u;
     CLK_TS_SEC ts_unix_sec;
-    CLK_TS_SEC tz_sec;
+    CLK_TS_SEC tz_sec = 0u;
     CLK_DATE_TIME date_time;
     CPU_BOOLEAN valid;
     CPU_CHAR    str[128];
     CLK_ERR     err;
+
+    ( void )p_arg;
+
 
     Clk_Init(&err);
     if (err == CLK_ERR_NONE) {
@@ -386,7 +389,7 @@ void AppTaskStart(void *p_arg)
         return;
     }
 
-    ts_sec = 0u;
+    tz_sec = 0u;
     valid = Clk_DateTimeMake(&date_time, 2020, 5, 11, 8, 12, 13, tz_sec);
     if (valid != DEF_OK) {
         TerminalSerial_Wr((void *)CLOCK_MAKE_ER, sizeof(CLOCK_MAKE_ER));
@@ -395,7 +398,7 @@ void AppTaskStart(void *p_arg)
     date_time.Yr        = 2020;
     date_time.Month     =     5;
     date_time.Day       =     11;
-    date_time.DayOfWk   =  Clk_GetDayOfWK(2020, 5, 11);
+    date_time.DayOfWk   =  Clk_GetDayOfWk(2020, 5, 11);
     date_time.DayOfYr   = 291;
     date_time.Hr        =   8;
     date_time.Min       =   12;
@@ -510,6 +513,20 @@ void AppTaskStart(void *p_arg)
         return;
     }
 
+    sendLen  = sprintf(sendBuf, "\r\n*****Clock date/time set succeed*******\r\n");
+    TerminalSerial_Wr((void *)sendBuf, sendLen);
+    Mem_Clr((void *)sendBuf, SEND_MAX_SIZE);
+    
+    valid = Clk_DateTimeToStr(&date_time, CLK_STR_FMT_YYYY_MM_DD_HH_MM_SS_UTC, str, 128);   //  (6)
+    if (valid == DEF_OK) {
+        sendLen = sprintf(sendBuf, "Current Date/time :%s\r\n", str);
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+    } else {
+        sendLen = sprintf(sendBuf, "Clock date/time to string failed\r\n");
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+        return;
+    }
+
 }
 
 
@@ -540,21 +557,84 @@ void AppTaskStart(void *p_arg)
 *********************************************************************************************************
 */
 
-#if 0
-static  void  Clk_OS_Task (void  *p_data)
+ void  Clk_OS_Task (void  *p_data)
 {
-    OS_ERR  os_err;
+//    OS_ERR  os_err;
 
 
    (void)p_data;                                               /* Prevent 'variable unused' compiler warning.          */
 
-    while (DEF_ON) {
-        Clk_TaskHandler();
-        OSTimeDly((OS_TICK ) 1u,                                /* Dly for lower prio task(s) [see Note #2].            */
-                  (OS_OPT  ) OS_OPT_TIME_DLY,
-                  (OS_ERR *)&os_err);
+
+//    HAL_RTCEx_SetSecond_IT(&hrtc);
+
+//    while (DEF_ON) {
+//        Clk_TaskHandler();
+//        OSTimeDly((OS_TICK ) 1u,                                /* Dly for lower prio task(s) [see Note #2].            */
+//                  (OS_OPT  ) OS_OPT_TIME_DLY,
+//                  (OS_ERR *)&os_err);
+//    }
+
+}
+ 
+void  Clk_OS_Init (CLK_ERR  *p_err)
+ {
+    HAL_StatusTypeDef status;
+    
+    ( void )p_err;
+
+    status = HAL_RTCEx_SetSecond_IT(&hrtc);
+    if (HAL_OK == status) {
+      *p_err = CLK_OS_ERR_NONE;
+    } else {
+        *p_err = CLK_OS_ERR_WAIT;
     }
+
 }
 
-#endif
+
+
+
+void display_time(void)
+{
+    char sendBuf[SEND_MAX_SIZE];
+    uint16_t sendLen = 0u;
+
+    CLK_TS_SEC ts_sec = 0u;
+    CLK_TS_SEC ts_unix_sec;
+    CLK_TS_SEC tz_sec = 0u;
+    CLK_DATE_TIME date_time;
+    CPU_BOOLEAN valid;
+    CPU_CHAR    str[128];
+    CLK_ERR     err;
+
+    Mem_Clr((void *)sendBuf, SEND_MAX_SIZE);
+
+//    valid = Clk_SetDateTime(&date_time);                                                      //(5)
+//    if (valid != DEF_OK) {
+//        TerminalSerial_Wr((void *)CLOCK_SET_FAIL, sizeof(CLOCK_SET_FAIL));
+//        return;
+//    }
+// 
+    ts_sec = Clk_GetTS();                                                                    //(11)
+    sendLen  = sprintf(sendBuf, "Clock timestamp = %u\r\n", ts_sec);
+    TerminalSerial_Wr((void *)sendBuf, sendLen);
+     
+
+    valid = Clk_TS_ToDateTime(ts_sec, 0, &date_time);                                      //  (12)
+    if (valid != DEF_OK) {
+        sendLen  = sprintf(sendBuf, "Clock convert timestamp to date/time failed\r\n");
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+        return;
+    }
+
+    valid = Clk_DateTimeToStr(&date_time, CLK_STR_FMT_YYYY_MM_DD_HH_MM_SS, str, 128);   //  (6)
+    if (valid == DEF_OK) {
+        sendLen = sprintf(sendBuf, "Current Date/time :%s\r\n", str);
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+    } else {
+        sendLen = sprintf(sendBuf, "Clock date/time to string failed\r\n");
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+        return;
+    }
+}
 
