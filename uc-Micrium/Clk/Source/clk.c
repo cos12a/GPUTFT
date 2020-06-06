@@ -669,7 +669,7 @@ CPU_BOOLEAN  Clk_GetDateTime (CLK_DATE_TIME  *p_date_time)
     CPU_BOOLEAN  valid;
 
 
-#if 0                                                           /* Validated in Clk_TS_ToDateTime().                    */
+#if 1                                                           /* Validated in Clk_TS_ToDateTime().                    */
     if (p_date_time == (CLK_DATE_TIME *)0) {                    /* -------------- VALIDATE DATE/TIME PTR -------------- */
         return (DEF_FAIL);
     }

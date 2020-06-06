@@ -70,7 +70,9 @@ build terminal_os.pbi : index terminal_os.xcl
 build terminal_serial.pbi : index terminal_serial.xcl
 build clk_cmd.pbi : index clk_cmd.xcl
 build clk_test.pbi : index clk_test.xcl
+build RingBuffer.pbi : index RingBuffer.xcl
 build GPU_Serial.pbi : index GPU_Serial.xcl
+build ring_buf_test.pbi : index ring_buf_test.xcl
 build send_test.pbi : index send_test.xcl
 build shell_app.pbi : index shell_app.xcl
 build GpuTestUart_part0.pbi : link dma.pbi freertos.pbi gpio.pbi main.pbi rtc.pbi stm32f1xx_hal_msp.pbi stm32f1xx_hal_timebase_tim.pbi
@@ -80,7 +82,7 @@ build GpuTestUart_part3.pbi : link stm32f1xx_hal_rtc.pbi stm32f1xx_hal_rtc_ex.pb
 build GpuTestUart_part4.pbi : link event_groups.pbi heap_4.pbi list.pbi port.pbi queue.pbi stream_buffer.pbi tasks.pbi
 build GpuTestUart_part5.pbi : link timers.pbi clk.pbi cpu_core.pbi lib_ascii.pbi lib_math.pbi lib_mem.pbi lib_str.pbi
 build GpuTestUart_part6.pbi : link sh_shell.pbi shell.pbi terminal.pbi terminal_mode.pbi terminal_os.pbi terminal_serial.pbi clk_cmd.pbi
-build GpuTestUart_part7.pbi : link clk_test.pbi GPU_Serial.pbi send_test.pbi shell_app.pbi
+build GpuTestUart_part7.pbi : link clk_test.pbi RingBuffer.pbi GPU_Serial.pbi ring_buf_test.pbi send_test.pbi shell_app.pbi
 build GpuTestUart.pbd : link GpuTestUart_part0.pbi GpuTestUart_part1.pbi GpuTestUart_part2.pbi GpuTestUart_part3.pbi GpuTestUart_part4.pbi GpuTestUart_part5.pbi GpuTestUart_part6.pbi GpuTestUart_part7.pbi
 build GpuTestUart.pbw : browsedata GpuTestUart.pbd
 

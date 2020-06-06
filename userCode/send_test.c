@@ -4,6 +4,7 @@
 #include "common_err.h"
 
 #include "clk_cmd_priv.h"
+#include "usart.h"
 
 typedef struct sendTxtCMD
 {
@@ -11,20 +12,30 @@ typedef struct sendTxtCMD
     uint8_t txtLen;
     
 }TestTxtCmd;
+
+
+
+
+#define ADD_CMD_QUANTITY                5u
     
-const int8_t help[] = "1help\r";
+const int8_t help[] = "help\r";
 const int8_t tab1[] = "2Test\r";
 const int8_t tab2[] = "3last\r";
 const int8_t tab3[] = "?\r";
+const int8_t clkGet[] = "clk_get\r";
 
 const int8_t GPU_Test[] = "DR2;CLS(0);DS24(4,0,'错误 ',1);BOS(0,30,319,130,11);\r\n";
 
 
 #define CMD_COUNT      (sizeof(sendCMD)/sizeof(sendCMD[0]))
-#define ADD_CMD_QUANTITY                4
 
-extern void AppTaskStart(void * p_arg);
+extern void CLK_AppTaskStart(void * p_arg);
 extern void display_time(void);
+extern HAL_StatusTypeDef GPU_tx_and_rx_hand(void         *pbuf,
+                                   uint16_t    buf_len);
+extern void receive_processing_task(void *pvParameters);
+extern void stream_send_data( void );
+extern void vAFunction( void );
 
 void RxReceive(void *argument)
 {
@@ -34,7 +45,8 @@ void RxReceive(void *argument)
         {help, sizeof(help)},
         {tab1, sizeof(tab1)},
         {tab2, sizeof(tab2)},
-        {tab3, sizeof(tab3)}
+        {tab3, sizeof(tab3)},
+        {clkGet, sizeof(clkGet)}
 
     };
     static uint8_t cmdCnt = 0u;
@@ -46,7 +58,13 @@ void RxReceive(void *argument)
     
     ClkCmd_Init(&err);
     
-    AppTaskStart(NULL);
+//同一个命令再次加入,检测是否存在问题.(不会出问题Shell_CmdTblAdd函数已经做了判断)
+//    ClkCmd_Init(&err);      
+
+    
+    CLK_AppTaskStart(NULL);
+    vAFunction();
+
 
     for(;;)
     {
@@ -62,8 +80,17 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
         cmdCnt = 0u;
         
      }
-    GPU_tx_and_rx_hand(GPU_Test, sizeof( GPU_Test ));
+    osDelay(2000);
+    GPU_tx_and_rx_hand((void *)GPU_Test, sizeof( GPU_Test ));
     display_time();
+    uint16_t j;
+    
+    stream_send_data();
+    
+    receive_processing_task(NULL);
+
+    
+    
     }
 
 }

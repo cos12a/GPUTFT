@@ -56,6 +56,8 @@ E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk
 -I
 E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Common
 -I
+E:\DiskE\ProgramProject\GPUTFT\userCode\RingBuffer
+-I
 E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc
 -I
 E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc\c
@@ -105,6 +107,8 @@ E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk\Source
 E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Clk
 -I
 E:\DiskE\ProgramProject\GPUTFT\uc-Micrium\Common
+-I
+E:\DiskE\ProgramProject\GPUTFT\userCode\RingBuffer
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

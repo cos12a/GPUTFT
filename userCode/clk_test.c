@@ -307,6 +307,7 @@
 #include  "clk.h"
 #include "clk_test.h"
 #include "clk_cmd_priv.h"
+#include "lib_mem.h"
 
 
 /*
@@ -365,7 +366,7 @@ static const char CLOCK_NOT_VALID[] ="Clock date/time not valid\n\r";
 static const char CLOCK_SET_FAIL[] = "Clock set date/time failed\r\n";
 
 #define SEND_MAX_SIZE           128u
-void AppTaskStart(void *p_arg)
+void CLK_AppTaskStart(void *p_arg)
 {
     char sendBuf[SEND_MAX_SIZE];
     uint16_t sendLen = 0u;
@@ -437,7 +438,8 @@ void AppTaskStart(void *p_arg)
         return;
     }
       
-    tz_sec = (-5 * 60 * 60);
+//    tz_sec = (-5 * 60 * 60);
+    tz_sec = 0u;
     valid = Clk_SetTZ(tz_sec);                                                               // (8)
     if (valid != DEF_OK) {
         sendLen  = sprintf(sendBuf, "Clock set timezone unix failed\r\n");
@@ -600,12 +602,13 @@ void display_time(void)
     uint16_t sendLen = 0u;
 
     CLK_TS_SEC ts_sec = 0u;
-    CLK_TS_SEC ts_unix_sec;
-    CLK_TS_SEC tz_sec = 0u;
+//    CLK_TS_SEC ts_unix_sec;
+//    CLK_TS_SEC tz_sec = 0u;
     CLK_DATE_TIME date_time;
     CPU_BOOLEAN valid;
     CPU_CHAR    str[128];
-    CLK_ERR     err;
+//    CLK_ERR     err;
+//    CPU_BOOLEAN          success;
 
     Mem_Clr((void *)sendBuf, SEND_MAX_SIZE);
 
@@ -615,24 +618,29 @@ void display_time(void)
 //        return;
 //    }
 // 
-    ts_sec = Clk_GetTS();                                                                    //(11)
-    sendLen  = sprintf(sendBuf, "Clock timestamp = %u\r\n", ts_sec);
+//    ts_sec = Clk_GetTS();                                                                    //(11)
+    valid = Clk_GetTS_NTP(&ts_sec);
+    if (valid == DEF_FAIL) {
+        sendLen  = sprintf(sendBuf, "\r\nClock function valid = Clk_GetTS_NTP(&ts_sec) is fail.\r\n");
+        TerminalSerial_Wr((void *)sendBuf, sendLen);
+     }
+    sendLen  = sprintf(sendBuf, "\r\nClock timestamp = %u\r\n", ts_sec);
     TerminalSerial_Wr((void *)sendBuf, sendLen);
      
 
     valid = Clk_TS_ToDateTime(ts_sec, 0, &date_time);                                      //  (12)
     if (valid != DEF_OK) {
-        sendLen  = sprintf(sendBuf, "Clock convert timestamp to date/time failed\r\n");
+        sendLen  = sprintf(sendBuf, "\r\nClock convert timestamp to date/time failed\r\n");
         TerminalSerial_Wr((void *)sendBuf, sendLen);
         return;
     }
 
     valid = Clk_DateTimeToStr(&date_time, CLK_STR_FMT_YYYY_MM_DD_HH_MM_SS, str, 128);   //  (6)
     if (valid == DEF_OK) {
-        sendLen = sprintf(sendBuf, "Current Date/time :%s\r\n", str);
+        sendLen = sprintf(sendBuf, "\r\nCurrent Date/time :%s\r\n", str);
         TerminalSerial_Wr((void *)sendBuf, sendLen);
     } else {
-        sendLen = sprintf(sendBuf, "Clock date/time to string failed\r\n");
+        sendLen = sprintf(sendBuf, "\r\nClock date/time to string failed\r\n");
         TerminalSerial_Wr((void *)sendBuf, sendLen);
         return;
     }

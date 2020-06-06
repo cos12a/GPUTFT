@@ -418,3 +418,40 @@ static void RingBufRdIxNextRefresh(RING_BUF *p_ring_buf)
     }
   }
 }
+
+
+
+#if 0
+
+
+RingBufRdStart（）
+ 从环形缓冲区中的下一个可用读取位置开始读取。
+ p_ring_buf指向要使用的环形缓冲区结构的指针。
+ DEF_OK如果环形缓冲区中有要读取的数据，
+ DEF_FAIL，否则。
+ （1）必须在调用RingBufRd（）之前调用此函数。读取完数据包后，必须调用相应的RingBufRdEnd（）。
+
+                                      RingBufRd（）
+  从环形缓冲区中的下一个可用读取位置读取。
+  p_ring_buf指向要使用的环形缓冲区结构的指针。
+  从缓冲区读取的大小。
+  指向读取缓冲区的指针，如果没有错误，
+  DEF_NULL，否则。
+  （1）必须先调用RingBufRdStart（），然后才能对该函数进行任何调用。可以多次调用此函数，以从缓冲区
+读取单个数据包。
+      读取完数据包后，必须对RingBufRdEnd（）进行一次调用。
+
+                                      RingBufRdEnd（）
+  完成从环形缓冲区的读取。
+  p_ring_buf指向要使用的环形缓冲区结构的指针。
+  （1）必须在对RingBufRd（）进行调用并且已读取完整的数据包之后调用此函数。
+
+RingBufDataIsAvail（）
+
+  查看环形缓冲区中是否有可用数据。
+  p_ring_buf指向要使用的环形缓冲区结构的指针。
+  DEF_YES，如果环形缓冲区中有可读取的数据，
+  DEF_FAIL，否则。
+
+
+#endif
