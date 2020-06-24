@@ -55,7 +55,7 @@ void RxReceive(void *argument)
     (void)argument;
     
     osDelay( xTicksToWait );
-    
+#if !defined( RING_BUF_TEST )
     ClkCmd_Init(&err);
     
 //同一个命令再次加入,检测是否存在问题.(不会出问题Shell_CmdTblAdd函数已经做了判断)
@@ -63,12 +63,15 @@ void RxReceive(void *argument)
 
     
     CLK_AppTaskStart(NULL);
+#endif
     vAFunction();
 
 
     for(;;)
     {
       osDelay(8000);
+      
+#if !defined( RING_BUF_TEST )
 extern  StreamBufferHandle_t Rx2StreamBuffer;
      size_t sendCnt = xStreamBufferSend( Rx2StreamBuffer,
                           ( const void * ) sendCMD[cmdCnt].pTxt ,
@@ -83,7 +86,9 @@ extern  StreamBufferHandle_t Rx2StreamBuffer;
     osDelay(2000);
     GPU_tx_and_rx_hand((void *)GPU_Test, sizeof( GPU_Test ));
     display_time();
-    uint16_t j;
+    
+#endif
+
     
     stream_send_data();
     

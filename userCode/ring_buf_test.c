@@ -28,7 +28,7 @@ static StreamBufferHandle_t  streamReceiveData = NULL;
 #define sbiSTREAM_BUFFER_LENGTH_BYTES		    ( ( size_t ) 64 )
 #define sbiSTREAM_BUFFER_TRIGGER_LEVEL_2	    ( ( BaseType_t ) 1 )
 
-#define RING_STREAM_TEST_SIZE                   ( ( size_t ) 64 )
+#define RING_STREAM_TEST_SIZE                   ( ( size_t ) 128 )
 #define RECEIVE_DATA_LENGTH                        8u
 #define MAX_SEND_BUF_SIZE                       ( RING_STREAM_TEST_SIZE / RECEIVE_DATA_LENGTH )
 
@@ -179,6 +179,7 @@ if( ( xTaskGetTickCount() - xTimeOnEntering ) < xTicksToWait )
 
 
 const char ringReceive[] = "Receive stream Data onece.\r\n";
+const char ringReceiveStart[] = "Receive stream ring receive start.\r\n";
 
 
 void receive_processing_task(void *pvParameters)
@@ -190,6 +191,7 @@ void receive_processing_task(void *pvParameters)
 
     /* Remove compiler warnings about unused parameters. */
     ( void ) pvParameters;
+    TerminalSerial_Wr((void *)ringReceiveStart, sizeof(ringReceiveStart));
 
     for ( uint8_t i = 0; i < MAX_SEND_BUF_SIZE; i++) {
 
@@ -203,7 +205,7 @@ void receive_processing_task(void *pvParameters)
 
         receive_demode_processing(pcReceivedString, xReceivedLength);       // 数据解析处理
 
-        RingBufWr(&rxRing_buf, RECEIVE_DATA_LENGTH, pcReceivedString);
+//        RingBufWr(&rxRing_buf, RECEIVE_DATA_LENGTH, pcReceivedString);
         TerminalSerial_Wr((void *)ringReceive, sizeof(ringReceive));
     }
 
@@ -227,5 +229,301 @@ static void *receive_demode_processing(void *pData, uint16_t length)
 // 数据刷新处理.每间隔0.5sec刷新一次.
 
 // 分发事件.
+
+
+
+
+
+/*
+ ********************************************************************************************************
+ *                                   CLOCK COMMAND PARSE STATUS DATA TYPE
+ *******************************************************************************************************/
+
+typedef enum clk_cmd_parse_status {
+  CLK_CMD_PARSE_STATUS_SUCCESS,
+  CLK_CMD_PARSE_STATUS_EMPTY,
+  CLK_CMD_PARSE_STATUS_INVALID_ARG,
+  CLK_CMD_PARSE_STATUS_HELP
+} CLK_CMD_PARSE_STATUS;
+
+
+/*
+*********************************************************************************************************
+*                                            LOCAL DATA TYPES
+*********************************************************************************************************
+*/
+
+
+/*
+*********************************************************************************************************
+*                                         LOCAL GLOBAL VARIABLES
+*********************************************************************************************************
+*/
+
+
+/*
+*********************************************************************************************************
+*                                        LOCAL FUNCTION PROTOTYPES
+*********************************************************************************************************
+*/
+
+
+
+static SHELL_CMD ringBuf_CmdTbl [] =
+{
+  { "ring_help", RingCmd_Help },
+  { "ring_Init", RingCmd_Init },
+  { "ring_get", RingBuf_Wr },
+  { "ring_get_day_of_yr", ClkCmd_GetDayOfYr },
+  { 0, 0 }
+};
+
+
+
+/*
+*********************************************************************************************************
+*                                       LOCAL CONFIGURATION ERRORS
+*********************************************************************************************************
+*/
+
+
+/*
+*********************************************************************************************************
+*                                             ShShell_Init()
+*
+* Description : Initialize Shell for general shell commands.
+*
+* Argument(s) : none.
+*
+* Return(s)   : DEF_OK,   if general shell commands were added.
+*               DEF_FAIL, otherwise.
+*
+* Caller(s)   : Application.
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+CPU_BOOLEAN  RingCmd_Init (void)
+{
+    SHELL_ERR    err;
+    CPU_BOOLEAN  ok;
+
+
+    Shell_CmdTblAdd((CPU_CHAR *)"Sh", ShShell_CmdTbl, &err);
+
+    ok = (err == SHELL_ERR_NONE) ? DEF_OK : DEF_FAIL;
+    return (ok);
+}
+
+//RingBufWr(&rxRing_buf, RECEIVE_DATA_LENGTH, pcReceivedString);
+
+
+
+
+static CPU_INT16S RingCmd_Help(CPU_INT16U      argc,
+                              CPU_CHAR        *p_argv[],
+                              SHELL_OUT_FNCT  out_fnct,
+                              SHELL_CMD_PARAM *p_cmd_param)
+{
+
+                                                                /* ---------------- RESPOND TO HELP CMD --------------- */
+    if (argc == 2u) {
+        if (Str_Cmp(argv[1], TERMINAL_STR_HELP) == 0) {
+            (void)out_fnct(TERMINAL_ARG_ERR_FC, (CPU_INT16U)Str_Len(TERMINAL_ARG_ERR_FC), pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_NEW_LINE,   2u,                                       pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_CMD_EXP_FC, (CPU_INT16U)Str_Len(TERMINAL_CMD_EXP_FC), pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_NEW_LINE,   2u,                                       pcmd_param->pout_opt);
+            return (SHELL_ERR_NONE);
+        }
+    }
+
+
+
+
+
+
+
+
+}
+
+static  CPU_INT16S  Terminal_fc (CPU_INT16U        argc,
+                                 CPU_CHAR         *argv[],
+                                 SHELL_OUT_FNCT    out_fnct,
+                                 SHELL_CMD_PARAM  *pcmd_param)
+{
+    CPU_INT16U  history_cnt;
+    CPU_INT16U  history_qty;
+    CPU_INT16U  history_item_len;
+    CPU_INT16U  history_ix;
+    CPU_INT16U  i;
+    CPU_CHAR    nbr_str[8];
+
+
+                                                                /* ---------------- RESPOND TO HELP CMD --------------- */
+    if (argc == 2u) {
+        if (Str_Cmp(argv[1], TERMINAL_STR_HELP) == 0) {
+            (void)out_fnct(TERMINAL_ARG_ERR_FC, (CPU_INT16U)Str_Len(TERMINAL_ARG_ERR_FC), pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_NEW_LINE,   2u,                                       pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_CMD_EXP_FC, (CPU_INT16U)Str_Len(TERMINAL_CMD_EXP_FC), pcmd_param->pout_opt);
+            (void)out_fnct(TERMINAL_NEW_LINE,   2u,                                       pcmd_param->pout_opt);
+            return (SHELL_ERR_NONE);
+        }
+    }
+
+
+
+                                                                /* ----------------- HANDLE ARG QTY ERR --------------- */
+    if (argc != 1u) {
+        (void)out_fnct(TERMINAL_ARG_ERR_FC, (CPU_INT16U)Str_Len(TERMINAL_ARG_ERR_FC), pcmd_param->pout_opt);
+        (void)out_fnct(TERMINAL_NEW_LINE,   2u,                                       pcmd_param->pout_opt);
+        return (SHELL_EXEC_ERR);
+    }
+
+
+
+                                                                /* --------------- LIST TERMINAL HISTORY -------------- */
+    if (Terminal_HistoryEmpty == DEF_YES) {                     /* If history empty ... rtn.                            */
+        return (SHELL_ERR_NONE);
+    }
+
+                                                                /* Calc nbr of items in history.                        */
+    if (Terminal_HistoryIxLast >= Terminal_HistoryIxFirst) {
+        history_qty = Terminal_HistoryIxLast - Terminal_HistoryIxFirst + 1u;
+    } else {
+        history_qty = TERMINAL_CFG_HISTORY_ITEMS_NBR;
+    }
+
+    history_cnt = Terminal_HistoryCnt - history_qty;
+    history_ix  = Terminal_HistoryIxFirst;
+    for (i = 0u; i < history_qty; i++) {                        /* List each history item & item cnt.                   */
+        (void)Str_FmtNbr_Int32U(history_cnt,
+                                7u,
+                                DEF_NBR_BASE_DEC,
+                                ASCII_CHAR_SPACE,
+                                DEF_NO,
+                                DEF_YES,
+                                nbr_str);
+
+        history_item_len = (CPU_INT16U)Str_Len(Terminal_History[history_ix]);
+        (void)out_fnct(nbr_str,                      7u,               pcmd_param->pout_opt);
+        (void)out_fnct((CPU_CHAR *)"     ",          5u,               pcmd_param->pout_opt);
+        (void)out_fnct(Terminal_History[history_ix], history_item_len, pcmd_param->pout_opt);
+        (void)out_fnct(TERMINAL_NEW_LINE,            2u,               pcmd_param->pout_opt);
+
+        history_cnt++;
+        history_ix++;
+        if (history_ix == TERMINAL_CFG_HISTORY_ITEMS_NBR) {
+            history_ix =  0u;
+        }
+    }
+
+    return (SHELL_ERR_NONE);
+}     
+
+
+
+
+static  CPU_INT16S  RingBuf_Wr (CPU_INT16U        argc,
+                                 CPU_CHAR         *argv[],
+                                 SHELL_OUT_FNCT    out_fnct,
+                                 SHELL_CMD_PARAM  *pcmd_param)
+{
+
+    status = ClkCmd_CmdArgParse(argc,
+                                p_argv,
+                                &cmd_arg);
+
+
+}
+
+
+
+/****************************************************************************************************//**
+*                                           ClkCmd_CmdArgParse()
+*
+* @brief    Parse and validate the argument for a clock test command.
+*
+* @param    argc        Count of the arguments supplied.
+*
+* @param    p_argv      Array of pointers to the strings which are those arguments.
+*
+* @param    p_cmd_args  Pointer to structure that will be filled during parse operation.
+*
+* @return   Clock command parse status:
+*               - CLK_CMD_PARSE_STATUS_SUCCESS
+*               - CLK_CMD_PARSE_STATUS_EMPTY
+*               - CLK_CMD_PARSE_STATUS_INVALID_ARG
+*               - CLK_CMD_PARSE_STATUS_HELP
+*
+* @note
+*******************************************************************************************************/
+static CLK_CMD_PARSE_STATUS ClkCmd_CmdArgParse(CPU_INT16U  argc,
+                                             CPU_CHAR    *p_argv[],
+                                             CLK_CMD_ARG *p_cmd_args)
+{
+CPU_INT16U i;
+CPU_INT16U arg_caught = 0u;
+
+p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_NONE;
+p_cmd_args->DatePtr = DEF_NULL;
+p_cmd_args->TimePtr = DEF_NULL;
+p_cmd_args->OffsetPtr = DEF_NULL;
+
+if (argc == 1) {
+  return (CLK_CMD_PARSE_STATUS_EMPTY);
+}
+
+for (i = 1u; i < argc; i++) {
+  if (*p_argv[i] == CLK_CMD_ARG_BEGIN) {
+    if (*(p_argv[i] + 1) == CLK_CMD_ARG_BEGIN) {              // --option type argument.
+      if (Str_Cmp(p_argv[i] + 2, CLK_CMD_FORMAT_DATETIME) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_DATETIME;
+      } else if (Str_Cmp(p_argv[i] + 2, CLK_CMD_FORMAT_NTP) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_NTP;
+      } else if (Str_Cmp(p_argv[i] + 2, CLK_CMD_FORMAT_UNIX) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_UNIX;
+      } else if (Str_Cmp(p_argv[i] + 2, CLK_CMD_HELP) == 0) {
+        return (CLK_CMD_PARSE_STATUS_HELP);
+      } else {
+        return (CLK_CMD_PARSE_STATUS_INVALID_ARG);
+      }
+    } else {                                                  // -o type argument.
+      if (Str_Cmp(p_argv[i] + 1, CLK_CMD_FORMAT_DATETIME_SHORT) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_DATETIME;
+      } else if (Str_Cmp(p_argv[i] + 1, CLK_CMD_FORMAT_NTP_SHORT) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_NTP;
+      } else if (Str_Cmp(p_argv[i] + 1, CLK_CMD_FORMAT_UNIX_SHORT) == 0) {
+        p_cmd_args->TimeType = CLK_CMD_TIME_TYPE_UNIX;
+      } else if (Str_Cmp(p_argv[i] + 1, CLK_CMD_HELP_SHORT) == 0) {
+        return (CLK_CMD_PARSE_STATUS_HELP);
+      } else {
+        return (CLK_CMD_PARSE_STATUS_INVALID_ARG);
+      }
+    }
+  } else {
+    switch (arg_caught) {
+      case 0:
+        p_cmd_args->DatePtr = p_argv[i];
+        break;
+
+      case 1:
+        p_cmd_args->TimePtr = p_argv[i];
+        break;
+
+      case 2:
+        p_cmd_args->OffsetPtr = p_argv[i];
+        break;
+
+      default:
+        break;
+    }
+
+    arg_caught++;
+  }
+}
+
+return (CLK_CMD_PARSE_STATUS_SUCCESS);
+}
 
 

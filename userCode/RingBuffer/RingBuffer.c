@@ -26,7 +26,7 @@
 #include  "ring_buf_priv.h"
 #include "FreeRTOS.h"
 #include "task.h"
-//#include "common_err.h"
+#include "common_err.h"
 //#include  <common/source/rtos/rtos_utils_priv.h>
 //#include  <common/source/kal/kal_priv.h>
 
@@ -93,10 +93,13 @@ void RingBufCreate(RING_BUF   *p_ring_buf,
 
    if( ringData != NULL ) {
     p_ring_buf->StartPtr = ringData;
+//    *p_err = RTOS_ERR_NONE;
    } else {
+    *p_err = RTOS_ERR_ALLOC;
+    goto exit_fail;
 //    RTOS_ERR_SET(*p_err, RTOS_ERR_NONE);
     // 队列创建失败
-    return ;
+//    return ;
    }
                                                     
   p_ring_buf->Size = buf_size;
@@ -108,9 +111,14 @@ void RingBufCreate(RING_BUF   *p_ring_buf,
   p_ring_buf->IsReading = DEF_NO;
   p_ring_buf->RdIxDirty = DEF_NO;
 
-//  RTOS_ERR_SET(*p_err, RTOS_ERR_NONE);
-
-  return;
+//  *p_err = RTOS_ERR_NONE;
+  
+//exit_ok:
+    *p_err = RTOS_ERR_NONE;
+    return;
+    
+exit_fail:
+    return;
 }
 
 /****************************************************************************************************//**
