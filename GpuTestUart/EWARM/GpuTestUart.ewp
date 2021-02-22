@@ -2370,9 +2370,6 @@
         </group>
         <group>
             <name>uC_Shell</name>
-            <excluded>
-                <configuration>Ring_BUF_TEST</configuration>
-            </excluded>
             <file>
                 <name>$PROJ_DIR$\..\..\uc-Micrium\Shell\Cmd\General\sh_shell.c</name>
             </file>
@@ -2422,7 +2419,7 @@
         <group>
             <name>ring_buff</name>
             <file>
-                <name>$PROJ_DIR$\..\..\uc-Micrium\ring_buf\ring_buf_priv.h</name>
+                <name>$PROJ_DIR$\..\..\userCode\RingBuffer\ringBuf_cmd.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\userCode\RingBuffer\RingBuffer.c</name>
@@ -2433,12 +2430,24 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\GPU_Serial.c</name>
+            <excluded>
+                <configuration>Ring_BUF_TEST</configuration>
+            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\ring_buf_test.c</name>
+            <excluded>
+                <configuration>Ring_BUF_TEST</configuration>
+            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\send_test.c</name>
+            <excluded>
+                <configuration>Ring_BUF_TEST</configuration>
+            </excluded>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\userCode\send_test_temp.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\userCode\shell_app.c</name>

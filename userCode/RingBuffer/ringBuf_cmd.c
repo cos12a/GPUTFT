@@ -93,6 +93,9 @@
 
 #define CMD_UNFINISHED                                  (CPU_CHAR *)("Shell cmd is CMD_UNFINISHED.\r\n")
 
+#define CMD_EXECUTE_SUCCESS                             (CPU_CHAR *)("The command execution is complete.\r\n")
+
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DATA TYPES
@@ -225,6 +228,10 @@ static CPU_INT16S RingCmd_OutputCmdTbl(SHELL_CMD       *p_cmd_tbl,
                                       SHELL_OUT_FNCT  out_fnct,
                                       SHELL_CMD_PARAM *p_cmd_param);
 
+static CPU_INT16S ring_test_dlist(CPU_INT16U        argc,
+                                   CPU_CHAR         *p_argv[],
+                                   SHELL_OUT_FNCT    out_fnct,
+                                   SHELL_CMD_PARAM  *p_cmd_param);
 
 
 
@@ -241,6 +248,7 @@ static SHELL_CMD Ring_CmdTbl [] =
   { "ring_write", RingCmd_Write },
   { "ring_get", Ring_Read },
   { "ring_init", ring_buf_init },
+  { "ring_test", ring_test_dlist},
   { 0, 0 }
 };
 
@@ -547,7 +555,47 @@ exit_fail:
 
 }
 
+static char Test_data = 0u;
+static char Test_Flag = 0u;
+static CPU_INT16S ring_test_dlist(CPU_INT16U        argc,
+                               CPU_CHAR         *p_argv[],
+                               SHELL_OUT_FNCT    out_fnct,
+                               SHELL_CMD_PARAM  *p_cmd_param)
+{
 
+    CPU_INT16S           ret_val = 0u;
+    CPU_INT16S           byte_out_cnt = 0u;
+    //    CPU_BOOLEAN          success;
+    RING_CMD_PARSE_STATUS parse_status;
+    CPU_INT16S           read_len;
+
+    parse_status = RingCmd_CmdArgParse(argc,
+                                          p_argv,
+                                          (void *)&read_len);
+    if ( ++Test_data > 100u){
+        Test_data = 0u;
+    }
+    
+    Test_Flag++;
+    Test_Flag &= 1u;
+
+    ret_val = RingCmd_OutputMsg(CMD_EXECUTE_SUCCESS,
+                                  DEF_YES,
+                                  DEF_YES,
+                                  DEF_NO,
+                                  out_fnct,
+                                  p_cmd_param);
+
+    RING_CMD_OUT_MSG_CHK(ret_val, byte_out_cnt, exit_fail);
+    goto exit_ok;
+
+
+
+exit_ok:
+    
+exit_fail: 
+    return(1u);
+}
 
 
 static  CPU_INT16S  Ring_Read (CPU_INT16U        argc,

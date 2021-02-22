@@ -46,7 +46,7 @@
         <ITMlogFile>$PROJ_DIR$\ITM.log</ITMlogFile>
     </SWOTraceHWSettings>
     <DebugChecksum>
-        <Checksum>4009901188</Checksum>
+        <Checksum>517474181</Checksum>
     </DebugChecksum>
     <Disassembly>
         <MixedMode>1</MixedMode>
@@ -61,9 +61,11 @@
         <ShowArgs>1</ShowArgs>
     </CallStack>
     <watch_formats>
-        <Fmt0>{W}1:isrflags	4	0</Fmt0>
-        <Fmt1>{W}1:ts_sec	4	0</Fmt1>
-        <Fmt2>{W}1:tz_sec	4	0</Fmt2>
+        <Fmt0>{W}1:Test_Flag	3	0</Fmt0>
+        <Fmt1>{W}1:Test_data	3	0</Fmt1>
+        <Fmt2>{W}1:isrflags	4	0</Fmt2>
+        <Fmt3>{W}1:ts_sec	4	0</Fmt3>
+        <Fmt4>{W}1:tz_sec	4	0</Fmt4>
     </watch_formats>
     <DriverProfiling>
         <Enabled>0</Enabled>
@@ -149,10 +151,8 @@
         <mode>1</mode>
     </DisassembleMode>
     <Breakpoints2>
-        <Bp0>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\userCode\ring_buf_test.c}.194.19" 0 0 1 "" 0 "" 0</Bp0>
-        <Bp1>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\userCode\ring_buf_test.c}.194.19" 0 0 1 "" 0 "" 0</Bp1>
-        <Bp2>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\userCode\send_test.c}.88.5" 0 0 1 "" 0 "" 0</Bp2>
-        <Count>3</Count>
+        <Bp0>_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\userCode\RingBuffer\ringBuf_cmd.c}.578.5" 0 0 1 "" 0 "" 0</Bp0>
+        <Count>1</Count>
     </Breakpoints2>
     <Aliases>
         <Count>0</Count>
